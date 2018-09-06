@@ -70,15 +70,16 @@ class module {
 
     init() {
         document.createElement(this._tagName);
-
         this._replacingAttributes = this.findAttributes(this._innerReplace, []);
         for (var key in this._replacingObjects) {
-            this._innerReplace = this.replaceVar(this._innerReplace, key, this._replacingObjects[key])
+            this._innerReplace = this.replaceVar(this._innerReplace, key, this._replacingObjects[key]);
         }
         this._tags = document.getElementsByTagName(this._tagName);
         
         for (var i = 0; i < this._tags.length; i++) {
             let newInnerReplace = '';
+            this._replacingAttributes = this.findAttributes(this._innerReplace, []);
+
             console.log(i);
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
             const filteredHtml = this._tags[i].innerHTML.replace(this._currentInnerHtml[i], '');
@@ -106,19 +107,26 @@ class module {
     }
 
     replaceAllAttributes(nonReplacedString, attributes, tag) {
-        if (attributes.length < 1 || attributes === []) {
-
-            return nonReplacedString;
-            // else reject(null)
-        }
-        else {
-            const attribute = attributes[attributes.length - 1];
-            console.log(attribute)
-            const replaceString = this._attributeOpener + attribute + this._attributeCloser;
+        for(var i = 0; i < attributes.length; i++) {
+            console.log(attributes[i])
+            const replaceString = this._attributeOpener + attributes[i] + this._attributeCloser;
             const re = new RegExp(replaceString, 'g');
-            nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attribute));
-            return this.replaceAllAttributes(nonReplacedString, attributes.splice(0, attributes.length - 1), tag);
+            nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attributes[i]));
         }
+        return nonReplacedString;
+        // if (attributes.length < 1 || attributes === []) {
+
+        //     return nonReplacedString;
+        //     // else reject(null)
+        // }
+        // else {
+        //     const attribute = attributes[attributes.length - 1];
+        //     console.log(attribute)
+        //     const replaceString = this._attributeOpener + attribute + this._attributeCloser;
+        //     const re = new RegExp(replaceString, 'g');
+        //     nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attribute));
+        //     return this.replaceAllAttributes(nonReplacedString, attributes.splice(0, attributes.length - 1), tag);
+        // }
     }
 
     replaceVar(nonReplacedString, key, val) {
