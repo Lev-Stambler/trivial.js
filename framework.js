@@ -1,5 +1,5 @@
 class module {
-
+    //fix replacingAttr array issue
 
     constructor(tagName, innerReplace, replacingObjects) {
         this._tagName = tagName;
