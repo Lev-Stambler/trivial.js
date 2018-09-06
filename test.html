@@ -1,0 +1,40 @@
+<html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src='/framework.js'></script>
+
+
+<head>
+</head>
+
+<body>
+    <div class="container">
+        <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
+        </imageMod>
+        <imageMod imageDesc='Ca' imagesrc = 'http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
+        </imageMod>
+        <h1>
+            <imageMod classx='3 '>
+            </imageMod>
+        </h1>
+    </div>
+    <script>
+        class imageMod extends module {
+
+            constructor() {
+                const html = `<div class = 'jumbotron' style = 'padding: 40px; margin-top: 20px;'>
+                    <div class = 'row' justify = 'center'><img src = '|{imagesrc}|' style = 'height: 300px'/></div>
+                    <h1>This is an image of a |{imagedesc}|</h1>
+                </div>`;
+                super('imageMod', html, { action: "roar" })
+            }
+            init() { super.init() }
+        }
+        const image = new imageMod();
+        image.init();
+        image.addEvent("keyup", () => { $('.{{numb}} #hello').text($('.1 #test').val()) }, { numb: '1' })
+    </script>
+</body>
+
+</html>
