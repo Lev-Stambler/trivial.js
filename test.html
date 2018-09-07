@@ -10,45 +10,36 @@
 
 <body>
     <div class="container">
+        <h1>Welcome to an <speltWrong>exhibition</speltWrong> of animals!!</h1>
         <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
         </imageMod>
         <imageMod imageDesc='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
         </imageMod>
-        <h1>
-            <imageMod imagesrc = 'https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc = 'Evie'>
-            </imageMod>
-        </h1>
+        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='Evie'>
+        </imageMod>
     </div>
     <script>
         class imageMod extends module {
 
             constructor() {
-                const html = `<div class = 'containerA'><div class = 'jumbotron col-sm-12' style = 'padding: 40px; margin-top: 20px;'>
-                    <div class = 'row'><div class = 'col-sm-12 center'><a href = '|{imagesrc}|'><img src = '|{imagesrc}|' style = 'height: 300px'/></a></div>
-                    <div class = 'col-sm-12 center'><h1>This is an image of a |{imagedesc}|</h1></div></div></div>
-                    <style>
-                        .jumbotron, .center {
-                            display: flex;
-                            justify-content: center;
-                            align-content: center;
-                        }
-                        .containerA {
-                            padding: 10px 100px;
-                        }
-                        body {
-                            margin:0 auto;
-                            position: relative;
-                            text-align: center;
-                        }
-                    </style>
-                </div>`;
+                const html = ``;
                 super('imageMod', html, { action: "roar" })
             }
-            init() { super.init() }
+            init() {
+                super.setHtmlSource('/imageMod.triv');
+                super.init()
+            }
         }
-        const image = new imageMod();
-        image.init();
-        image.addEvent("keyup", () => { $('.{{numb}} #hello').text($('.1 #test').val()) }, { numb: '1' })
+        const speltWrong = new module('speltWrong', ``, {});
+
+        speltWrong.setCssSource('/speltWrong.css');
+        $(document).ready(function () {
+            const image = new imageMod();
+            image.init();
+            image.shadowRoot = false;
+            image.addEvent("keyup", () => { $('.{{numb}} #hello').text($('.1 #test').val()) }, { numb: '1' });
+        });
+
     </script>
 </body>
 

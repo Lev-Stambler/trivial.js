@@ -12,6 +12,26 @@ class module {
         this.attributeCloser = '}|';
         this._currentInnerHtml = [];
         this._replacingAttributes = [];
+        this._css = '';
+        this._shadowRoot = false;
+    }
+
+
+    set shadowRoot(isShadow) {
+        if(isShadow) {
+            this._shadowRoot = true;
+            if(this._hasInitialized)
+               for(var i = 0; i < this._tags.length; i++) 
+                this._tags[i].getElementsByClassName("moduleOuterDiv")[0].createShadowRoot();
+        }
+        else {
+            if(this._shadowRoot) this.init();
+            this._shadowRoot = false;
+        }
+    }
+
+    set css(cssCode) {
+        this.setCss(cssCode)
     }
 
     set attributeOpener(opener) {
@@ -46,6 +66,38 @@ class module {
         if (this._hasInitialized) this.init()
     }
 
+    setCssSource(url) {
+        const scope = this;
+        $.get(url, function (res) {
+            scope.setCss(res)
+        });
+    }
+
+    setHtmlSource(url) {
+        const scope = this;
+        $.get(url, function (res) {
+            scope.innerReplace = res;
+        });
+        
+    }
+
+
+    setCss(cssCode) {
+        if (!this._hasInitialized) this.init();
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        if (style.styleSheet) {
+            // This is required for IE8 and below.
+            style.styleSheet.cssText = cssCode;
+        } else {
+            style.appendChild(document.createTextNode(cssCode));
+        }
+        for (var i = 0; i < this._tags.length; i++) {
+            this._tags[i].appendChild(style);
+        }
+        return true
+    }
+
     addEvent(event, func, replacingObjects) {
         if (!this._hasInitialized) this.init()
         for (var key in replacingObjects) {
@@ -74,20 +126,31 @@ class module {
         for (var key in this._replacingObjects) {
             this._innerReplace = this.replaceVar(this._innerReplace, key, this._replacingObjects[key]);
         }
-        this._tags = document.getElementsByTagName(this._tagName);
-        
+
+        this._tags = document.getElementsByTagName(this._tagName);        
+
         for (var i = 0; i < this._tags.length; i++) {
+            if(this._shadowRoot) {
+                this._tags[i].getElementsByClassName("moduleOuterDiv")[0].createShadowRoot().createShadowRoot();
+            }
             let newInnerReplace = '';
             this._replacingAttributes = this.findAttributes(this._innerReplace, []);
 
-            console.log(i);
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
+            let outerDiv = document.createElement('div');
             const filteredHtml = this._tags[i].innerHTML.replace(this._currentInnerHtml[i], '');
-            this._tags[i].innerHTML = newInnerReplace + filteredHtml;
-            this._currentInnerHtml[i] = this.escapeRegex(this._tags[i].innerHTML);
+
+            outerDiv.className += "moduleOuterDiv";
+            outerDiv.innerHTML = newInnerReplace + filteredHtml;
+            this._tags[i].innerHTML = '';
+            this._tags[i].innerHTML = outerDiv.outerHTML;
+
+            
+            this._currentInnerHtml[i] = outerDiv.outerHTML;
+
         }
         this._hasInitialized = true
-        return true
+        return true;
     }
 
     findAttributes(nonReplacedString, arr) {
@@ -107,26 +170,14 @@ class module {
     }
 
     replaceAllAttributes(nonReplacedString, attributes, tag) {
-        for(var i = 0; i < attributes.length; i++) {
-            console.log(attributes[i])
+        for (var i = 0; i < attributes.length; i++) {
+
             const replaceString = this._attributeOpener + attributes[i] + this._attributeCloser;
             const re = new RegExp(replaceString, 'g');
             nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attributes[i]));
         }
         return nonReplacedString;
-        // if (attributes.length < 1 || attributes === []) {
 
-        //     return nonReplacedString;
-        //     // else reject(null)
-        // }
-        // else {
-        //     const attribute = attributes[attributes.length - 1];
-        //     console.log(attribute)
-        //     const replaceString = this._attributeOpener + attribute + this._attributeCloser;
-        //     const re = new RegExp(replaceString, 'g');
-        //     nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attribute));
-        //     return this.replaceAllAttributes(nonReplacedString, attributes.splice(0, attributes.length - 1), tag);
-        // }
     }
 
     replaceVar(nonReplacedString, key, val) {
