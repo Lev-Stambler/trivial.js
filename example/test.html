@@ -10,12 +10,12 @@
 
 <body>
     <div class="container">
-        <h1>Welcome to an <speltWrong>exhibition</speltWrong> of animals!!</h1>
+        <h1>Welcome to an <speltWrong><span>exhibition</span></speltWrong> of animals!!</h1>
         <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
         </imageMod>
         <imageMod imageDesc='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
         </imageMod>
-        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='Evie'>
+        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='<speltWrong><span>Orengatang</span></speltWrong>'>
         </imageMod>
     </div>
     <script>
@@ -24,20 +24,19 @@
             constructor() {
                 const html = ``;
                 super('imageMod', html, { action: "roar" })
-            }
-            init() {
-                super.setHtmlSource('/imageMod.triv');
-                super.init()
+                super.setHtmlSource('imageMod.triv');
+
             }
         }
-        const speltWrong = new module('speltWrong', ``, {});
 
-        speltWrong.setCssSource('/speltWrong.css');
         $(document).ready(function () {
             const image = new imageMod();
             image.init();
-            image.shadowRoot = false;
-            image.addEvent("keyup", () => { $('.{{numb}} #hello').text($('.1 #test').val()) }, { numb: '1' });
+            const speltWrong = new module('speltWrong', ``, {});
+            speltWrong.shadowDOM = true;
+            speltWrong.setCssSource('speltWrong.css');
+            // image.shadowRoot = false;
+            // image.addEvent("keyup", () => { $('.{{numb}} #hello').text($('.1 #test').val()) }, { numb: '1' });
         });
 
     </script>

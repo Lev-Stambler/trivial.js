@@ -13,26 +13,28 @@ class module {
         this._currentInnerHtml = [];
         this._replacingAttributes = [];
         this._css = '';
-        this._shadowRoot = false;
+        this._shadowDOM = false;
     }
 
 
-    set shadowRoot(isShadow) {
-        if(isShadow) {
-            this._shadowRoot = true;
-            if(this._hasInitialized)
-               for(var i = 0; i < this._tags.length; i++) 
-                this._tags[i].getElementsByClassName("moduleOuterDiv")[0].createShadowRoot();
+    set shadowDOM(isShadow) {
+        if (isShadow) {
+            this._shadowDOM = true;
+            if (this._hasInitialized)
+                for (var i = 0; i < this._tags.length; i++)
+                    this.init();
+            // this._tags[i].getElementsByClassName("moduleOuterSpan")[0].createShadowRoot();
         }
         else {
-            if(this._shadowRoot) this.init();
-            this._shadowRoot = false;
+            if (this._shadowDOM) this.init();
+            this._shadowDOM = false;
         }
     }
 
     set css(cssCode) {
-        this.setCss(cssCode)
+        this.setCss(cssCode);
     }
+
 
     set attributeOpener(opener) {
         this._attributeOpener = this.escapeRegex(opener);
@@ -66,6 +68,14 @@ class module {
         if (this._hasInitialized) this.init()
     }
 
+    setJavascriptSource(url) {
+        const scope = this;
+        $.get(url, function (res) {
+            scope.setJavsascript(res)
+        });
+    }
+
+
     setCssSource(url) {
         const scope = this;
         $.get(url, function (res) {
@@ -73,14 +83,14 @@ class module {
         });
     }
 
+
     setHtmlSource(url) {
         const scope = this;
         $.get(url, function (res) {
             scope.innerReplace = res;
         });
-        
-    }
 
+    }
 
     setCss(cssCode) {
         if (!this._hasInitialized) this.init();
@@ -89,11 +99,30 @@ class module {
         if (style.styleSheet) {
             // This is required for IE8 and below.
             style.styleSheet.cssText = cssCode;
-        } else {
+        }
+        else {
             style.appendChild(document.createTextNode(cssCode));
         }
         for (var i = 0; i < this._tags.length; i++) {
-            this._tags[i].appendChild(style);
+            if (this._shadowDOM) this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.appendChild(style);
+            else this._tags[i].getElementsByClassName('moduleOuterSpan')[0].appendChild(style);
+        }
+        return true;
+    }
+
+
+
+    setJavascript(jsCode) {
+        if (!this._hasInitialized) this.init();
+        const jsTag = document.createElement('script');
+        if (jsTag.styleSheet) {
+            // This is required for IE8 and below.
+            style.styleSheet.cssText = cssCode;
+        } else {
+            jsTag.appendChild(document.createTextNode(jsCode));
+        }
+        for (var i = 0; i < this._tags.length; i++) {
+            this._tags[i].appendChild(jsTag);
         }
         return true
     }
@@ -123,33 +152,35 @@ class module {
     init() {
         document.createElement(this._tagName);
         this._replacingAttributes = this.findAttributes(this._innerReplace, []);
-        for (var key in this._replacingObjects) {
-            this._innerReplace = this.replaceVar(this._innerReplace, key, this._replacingObjects[key]);
-        }
+        this._innerReplace = this.replaceVar(this._innerReplace);
 
-        this._tags = document.getElementsByTagName(this._tagName);        
+
+        this._tags = document.getElementsByTagName(this._tagName);
 
         for (var i = 0; i < this._tags.length; i++) {
-            if(this._shadowRoot) {
-                this._tags[i].getElementsByClassName("moduleOuterDiv")[0].createShadowRoot().createShadowRoot();
-            }
+            let outerSpan;
             let newInnerReplace = '';
             this._replacingAttributes = this.findAttributes(this._innerReplace, []);
 
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
-            let outerDiv = document.createElement('div');
+            outerSpan = document.createElement('span');
+            outerSpan.className += "moduleOuterSpan";
+
             const filteredHtml = this._tags[i].innerHTML.replace(this._currentInnerHtml[i], '');
 
-            outerDiv.className += "moduleOuterDiv";
-            outerDiv.innerHTML = newInnerReplace + filteredHtml;
+            if (this._shadowDOM) {
+                outerSpan.attachShadow({ mode: 'open' });
+                outerSpan.shadowRoot.innerHTML = newInnerReplace + filteredHtml;
+            }
+            else outerSpan.innerHTML = newInnerReplace + filteredHtml;
             this._tags[i].innerHTML = '';
-            this._tags[i].innerHTML = outerDiv.outerHTML;
+            this._tags[i].append(outerSpan);
 
-            
-            this._currentInnerHtml[i] = outerDiv.outerHTML;
+            this._currentInnerHtml[i] = outerSpan.outerHTML;
 
         }
-        this._hasInitialized = true
+        this._hasInitialized = true;
+
         return true;
     }
 
@@ -180,12 +211,14 @@ class module {
 
     }
 
-    replaceVar(nonReplacedString, key, val) {
-        const replaceString = this._varOpener + key + this._varCloser;
-        const re = new RegExp(replaceString, 'g');
-        return nonReplacedString.replace(re, val);
+    replaceVar(nonReplacedString) {
+        for (var key in this._replacingObjects) {
+            const replaceString = this._varOpener + key + this._varCloser;
+            const re = new RegExp(replaceString, 'g');
+            nonReplacedString = nonReplacedString.replace(re, this._replacingObjects[key]);
+        }
+        return nonReplacedString;
     }
 
 }
 
-// <script src = 'C:/Users/levst/Documents/Programming/JS Framework/Front Render/framework.js'></script>  '\\{\\{' '\\}\\}'
