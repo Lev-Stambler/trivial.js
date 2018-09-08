@@ -23,7 +23,6 @@ class module {
             if (this._hasInitialized)
                 for (var i = 0; i < this._tags.length; i++)
                     this.init();
-            // this._tags[i].getElementsByClassName("moduleOuterSpan")[0].createShadowRoot();
         }
         else {
             if (this._shadowDOM) this.init();
@@ -93,7 +92,8 @@ class module {
     }
 
     setCss(cssCode) {
-        if (!this._hasInitialized) this.init();
+        //for now on sets init must be done inorder to find all components and add necessary stuff
+        this.init();
         const style = document.createElement('style');
         style.type = 'text/css';
         if (style.styleSheet) {
@@ -104,8 +104,8 @@ class module {
             style.appendChild(document.createTextNode(cssCode));
         }
         for (var i = 0; i < this._tags.length; i++) {
-            if (this._shadowDOM) this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.appendChild(style);
-            else this._tags[i].getElementsByClassName('moduleOuterSpan')[0].appendChild(style);
+            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanIterate" + i + "Tag" + this._tagName)[0].shadowRoot.innerHTML += style.outerHTML;
+            else this._tags[i].getElementsByClassName("moduleOuterSpanIterate" + i + "Tag" + this._tagName)[0].innerHTML += style.outerHTML;
         }
         return true;
     }
@@ -155,7 +155,7 @@ class module {
         this._innerReplace = this.replaceVar(this._innerReplace);
 
         this._tags = document.getElementsByTagName(this._tagName);
-
+        console.log(this._tags.length)
         for (var i = 0; i < this._tags.length; i++) {
             let outerSpan;
             let newInnerReplace = '';
@@ -163,23 +163,23 @@ class module {
 
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
             outerSpan = document.createElement('span');
-            outerSpan.className += "moduleOuterSpan";
+            const spanClass = "moduleOuterSpanIterate" + i + "Tag" + this._tagName;
+            outerSpan.className += spanClass;
             //if else to handle null innercurrenthtml
             //filtered html is html not javascript generated
             let filteredHtml = '';
-            if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName('moduleOuterSpan').length > 0) {
+            if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName(spanClass).length > 0) {
                 if(this._shadowDOM)
-                    filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.innerHTML;
-                else filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML;
+                    filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
+                else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML;
             }
-            else if (this._tags[i].getElementsByClassName('moduleOuterSpan').length > 0){
-                // const re = RegExp(this.escapeRegex(this._currentInnerHtml[i].replace(/"/g, "'")), 'g');
-                // console.log(this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML.replace(/"/g, "'").replace(/[\n\t\r]/g, ''))
+            else if (this._tags[i].getElementsByClassName(spanClass).length > 0){
+                
                 const re = this._currentInnerHtml[i];
-                console.log(re == this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML)
+                console.log(re == this._tags[i].getElementsByClassName(spanClass)[0].innerHTML)
                 if(this._shadowDOM)
-                    filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.innerHTML.split(re).join('');
-                else filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML.split(re).join('');
+                    filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML.split(re).join('');
+                else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML.split(re).join('');
             }
             else {
                 filteredHtml = this._tags[i].innerHTML;
@@ -189,6 +189,7 @@ class module {
                 outerSpan.shadowRoot.innerHTML = newInnerReplace + filteredHtml;
             }
             else outerSpan.innerHTML = newInnerReplace + filteredHtml;
+            
             this._tags[i].innerHTML = '';
             this._tags[i].append(outerSpan);
 
@@ -197,7 +198,6 @@ class module {
             let htmlEval = document.createElement('span');
             htmlEval.innerHTML = newInnerReplace;
             this._currentInnerHtml[i] = htmlEval.innerHTML;//outerSpan.outerHTML;
-
         }
         this._hasInitialized = true;
 
@@ -242,3 +242,19 @@ class module {
 
 }
 
+var trivial = {
+    refreshOnDOMChange: function(classes) {
+        if(Object.prototype.toString.call(classes) === '[object Array]') {
+            document.addEventListener('change', function () {
+                for(var i = 0; i < classes.length; i++) {
+                    classes[i].init();
+                }
+            });
+        }
+        else {
+            document.addEventListener('change', function () {
+                classes.init();
+            });
+        }
+    }
+}
