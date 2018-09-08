@@ -9,9 +9,8 @@ span:before {
     font-weight: 700;
     font-family: Times New Roman, Serif;
     color: red;
-    width: 100%;
     position: absolute;
-    top: 90%;
+    top: 80%;
     left: -1px;
     overflow: hidden;
 }

@@ -6,10 +6,10 @@ class module {
         this._innerReplace = innerReplace;
         this._replacingObjects = replacingObjects;
         this._hasInitialized = false;
-        this._varOpener = (this.varOpener = '{{');
-        this._varCloser = (this.varCloser = '}}');
-        this.attributeOpener = '|{';
-        this.attributeCloser = '}|';
+        this.varOpener = '<(';
+        this.varCloser = ')>';
+        this.attributeOpener = '<{';
+        this.attributeCloser = '}>';
         this._currentInnerHtml = [];
         this._replacingAttributes = [];
         this._css = '';
@@ -139,21 +139,20 @@ class module {
     }
 
     escapeRegex(string) {
-        const toEscape = '.^$*+?()[]{}\\|'.split('')
+        const toEscape = '.^$*+?()[]{}\\|&-<>'.split('')
         const backSlash = String('\\')
         for (var i = 0; i < toEscape.length; i++) {
             const re = new RegExp(backSlash + toEscape[i], 'g');
             string = string.replace(re, (backSlash + toEscape[i]).replace(/\\\\/g, '\\'));
             //slow but seems to be only way to not interfere with input text yet replace the \\ with \
         }
-        return string
+        return string.replace(/[\n\t]/g, '')
     }
 
     init() {
         document.createElement(this._tagName);
         this._replacingAttributes = this.findAttributes(this._innerReplace, []);
         this._innerReplace = this.replaceVar(this._innerReplace);
-
 
         this._tags = document.getElementsByTagName(this._tagName);
 
@@ -165,9 +164,26 @@ class module {
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
             outerSpan = document.createElement('span');
             outerSpan.className += "moduleOuterSpan";
-
-            const filteredHtml = this._tags[i].innerHTML.replace(this._currentInnerHtml[i], '');
-
+            //if else to handle null innercurrenthtml
+            //filtered html is html not javascript generated
+            let filteredHtml = '';
+            if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName('moduleOuterSpan').length > 0) {
+                if(this._shadowDOM)
+                    filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.innerHTML;
+                else filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML;
+            }
+            else if (this._tags[i].getElementsByClassName('moduleOuterSpan').length > 0){
+                // const re = RegExp(this.escapeRegex(this._currentInnerHtml[i].replace(/"/g, "'")), 'g');
+                // console.log(this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML.replace(/"/g, "'").replace(/[\n\t\r]/g, ''))
+                const re = this._currentInnerHtml[i];
+                console.log(re == this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML)
+                if(this._shadowDOM)
+                    filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].shadowRoot.innerHTML.split(re).join('');
+                else filteredHtml = this._tags[i].getElementsByClassName('moduleOuterSpan')[0].innerHTML.split(re).join('');
+            }
+            else {
+                filteredHtml = this._tags[i].innerHTML;
+            }
             if (this._shadowDOM) {
                 outerSpan.attachShadow({ mode: 'open' });
                 outerSpan.shadowRoot.innerHTML = newInnerReplace + filteredHtml;
@@ -176,7 +192,11 @@ class module {
             this._tags[i].innerHTML = '';
             this._tags[i].append(outerSpan);
 
-            this._currentInnerHtml[i] = outerSpan.outerHTML;
+            //the html has to be evaluated in order to correct errors in html and normalize
+
+            let htmlEval = document.createElement('span');
+            htmlEval.innerHTML = newInnerReplace;
+            this._currentInnerHtml[i] = htmlEval.innerHTML;//outerSpan.outerHTML;
 
         }
         this._hasInitialized = true;
