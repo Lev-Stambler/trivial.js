@@ -91,6 +91,8 @@ I am number 1 and blue
 I am number 2 and blue
 ```
 
+the innerHTML variable will be set equal to what was inside a custom tag **before** init() is called on the tag.
+
 ## Authors
 
 * **Lev Stambler** - *Initial work* - [Lev-Stambler](https://github.com/Lev-Stambler)
