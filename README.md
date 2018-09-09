@@ -67,7 +67,10 @@ So within the describer tag, the user will see **I am blue** rather than **I am 
 
 #### Inherit Variables
 
-The trivial library also comes with inherit variables. For now, there are three: count, countFromOne, innerHTML.
+The trivial library also comes with inherit variables. For now, there are three: 
+* count 
+* countFromOne
+* innerHTML.
 
 count and countFromOne are similar. Count returns which instance of a module it is. countFromOne does the same, but rather than starting from 0 it starts from 1
 
