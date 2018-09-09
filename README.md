@@ -67,7 +67,29 @@ So within the describer tag, the user will see **I am blue** rather than **I am 
 
 #### Inherit Variables
 
+The trivial library also comes with inherit variables. For now, there are three: count, countFromOne, innerHTML.
 
+count and countFromOne are similar. Count returns which instance of a module it is. countFromOne does the same, but rather than starting from 0 it starts from 1
+
+```
+<describer></describer><br/>
+<describer></describer><br/>
+<describer></describer>
+
+<script>
+  const html = `<div class = 'superCool'>
+    I am number <{count}> and <{adj}>
+  </div>`;
+  const customTag = new module('describer', html, { adj: "blue" });
+  customTag.init();
+</script>
+```
+So the user will see: 
+```
+I am number 0 and blue
+I am number 1 and blue
+I am number 2 and blue
+```
 
 ## Authors
 
