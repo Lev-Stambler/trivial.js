@@ -167,7 +167,7 @@ I am element number <(countFromOne)>. I know that this library is just the <{adj
 </style>
 ```
 
-Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter and with Javascript use the setJSSource, again with the URL as the parameter
+Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter (ex `customTag.setCSSSource('/mySiteStyle.css')`) and with Javascript use the setJSSource (ex `customTag.setJSSource('/mySiteScript.js')`)
 
 ## Authors
 
