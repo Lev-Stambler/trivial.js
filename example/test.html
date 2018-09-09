@@ -11,14 +11,14 @@
 <body>
     <div class="container">
         <h1>
-            <speltWrong><span>Welcome</span></speltWrong> to an <speltWrong><span>exhabition</span></speltWrong> of
+            Welcome to an <speltWrong>exhabition</speltWrong> of
             animals!!
         </h1>
         <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
         </imageMod>
         <imageMod imageDesc='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
         </imageMod>
-        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='<speltWrong><span>Orengatang</span></speltWrong>'>
+        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='<speltWrong>Orengotang</speltWrong>'>
         </imageMod>
     </div>
     <script>
@@ -32,14 +32,21 @@
         }
 
         const image = new imageMod();
-        const speltWrong = new module('speltWrong', ``, {});
-        trivial.refreshOnDOMChange([speltWrong, image]);
+        const speltWrong = new module('speltWrong', `
+            <span><(innerHTML)></span>
+        `, {});
+        // trivial.updatingModule([speltWrong, image]);
 
-        speltWrong.shadowDOM = true;
+        image.init(function () {
+            speltWrong.shadowDOM = true;
+            setTimeout(function () {
+                speltWrong.init();
+                speltWrong.setCssSource('speltWrong.css');
+            }, 10);
 
-        speltWrong.setCssSource('speltWrong.css');
-        speltWrong.init();
-        image.init();
+
+        });
+
 
     </script>
 </body>

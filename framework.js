@@ -3,7 +3,7 @@ class module {
 
     constructor(tagName, innerReplace, replacingObjects) {
         this._tagName = tagName;
-        this._innerReplace = innerReplace;
+        this._rawInnerHTML = innerReplace;
         this._replacingObjects = replacingObjects;
         this._hasInitialized = false;
         this.varOpener = '<(';
@@ -16,7 +16,7 @@ class module {
         this._shadowDOM = false;
         this._cssNode = document.createElement('style');
         this._cssNode.type = 'text/css';
-        
+        this._originalHTML = [];
     }
 
 
@@ -60,7 +60,7 @@ class module {
     }
 
     set innerReplace(newInnerReplace) {
-        this._innerReplace = newInnerReplace
+        this._rawInnerHTML = newInnerReplace
         if (this._hasInitialized) this.init()
     }
 
@@ -97,7 +97,7 @@ class module {
     setCss(cssCode) {
         //for now on sets init must be done inorder to find all components and add necessary stuff
         this.init();
-        
+
         if (this._cssNode.styleSheet) {
             // This is required for IE8 and below.
             this._cssNode.styleSheet.cssText += cssCode;
@@ -114,8 +114,23 @@ class module {
 
     refreshCss() {
         for (var i = 0; i < this._tags.length; i++) {
-            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML = this._cssNode.outerHTML;
-            else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML = this._cssNode.outerHTML;
+            if (this._shadowDOM) {
+                let styleTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.getElementsByTagName('style');
+                if (styleTag.length > 0) {
+                    for (var j = 0; j < styleTag.length; j++)
+                        styleTag[j].outerHTML = styleTag[j].outerHTML.split(this._cssNode).join('');
+                }
+                if (this._tags[i].getElementsByTagName('style'))
+                    this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._cssNode.outerHTML;
+            }
+            else {
+                let styleTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('style');
+                if (styleTag.length > 0) {
+                    for (var j = 0; j < styleTag.length; j++)
+                        styleTag[j].outerHTML = styleTag[j].outerHTML.split(this._cssNode).join('');
+                }
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._cssNode.outerHTML;
+            }
         }
     }
 
@@ -137,8 +152,8 @@ class module {
     addEvent(event, func, replacingObjects) {
         if (!this._hasInitialized) this.init()
         for (var key in replacingObjects) {
-            const funcString = this.replaceVar(String(func), key, replacingObjects[key])
             for (var i = 0; i < this._tags.length; i++) {
+                const funcString = this.replaceVar(String(func), i)
                 this._tags[i].addEventListener(event, eval(funcString))
             }
         }
@@ -156,35 +171,34 @@ class module {
         return string.replace(/[\n\t]/g, '')
     }
 
-    init() {
+    init(callback) {
         document.createElement(this._tagName);
-        this._replacingAttributes = this.findAttributes(this._innerReplace, []);
-        this._innerReplace = this.replaceVar(this._innerReplace);
+        this._replacingAttributes = this.findAttributes(this._rawInnerHTML, []);
 
         this._tags = document.getElementsByTagName(this._tagName);
-        console.log(this._tags.length)
         for (var i = 0; i < this._tags.length; i++) {
+            if (!this._hasInitialized) this._originalHTML.push(this._tags[i].innerHTML);
+            this._varReplacedInnerHTML = this.replaceVar(this._rawInnerHTML, i);
             let outerSpan;
             let newInnerReplace = '';
-            this._replacingAttributes = this.findAttributes(this._innerReplace, []);
+            this._replacingAttributes = this.findAttributes(this._varReplacedInnerHTML, []);
 
-            newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
+            newInnerReplace = this.replaceAllAttributes(this._varReplacedInnerHTML, this._replacingAttributes, this._tags[i]);
             outerSpan = document.createElement('span');
+
             const spanClass = "moduleOuterSpanTag" + this._tagName;
             outerSpan.className += spanClass;
             //if else to handle null innercurrenthtml
             //filtered html is html not javascript generated
             let filteredHtml = '';
             if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName(spanClass).length > 0) {
-                if(this._shadowDOM)
+                if (this._shadowDOM)
                     filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
                 else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML;
             }
-            else if (this._tags[i].getElementsByClassName(spanClass).length > 0){
-                
+            else if (this._tags[i].getElementsByClassName(spanClass).length > 0) {
                 const re = this._currentInnerHtml[i];
-                console.log(re == this._tags[i].getElementsByClassName(spanClass)[0].innerHTML)
-                if(this._shadowDOM)
+                if (this._shadowDOM)
                     filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML.split(re).join('');
                 else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML.split(re).join('');
             }
@@ -193,22 +207,33 @@ class module {
             }
             if (this._shadowDOM) {
                 outerSpan.attachShadow({ mode: 'open' });
-                outerSpan.shadowRoot.innerHTML = newInnerReplace + filteredHtml;
+                outerSpan.shadowRoot.innerHTML = newInnerReplace;// + filteredHtml;
+                outerSpan.shadowRoot.innerHTML += this._cssNode.outerHTML;
             }
-            else outerSpan.innerHTML = newInnerReplace + filteredHtml;
-            
+            else {
+                outerSpan.innerHTML = newInnerReplace;// + filteredHtml;
+                outerSpan.innerHTML += this._cssNode.outerHTML;
+
+            }
             this._tags[i].innerHTML = '';
             this._tags[i].append(outerSpan);
 
-            //the html has to be evaluated in order to correct errors in html and normalize
-            // document.getElementsByTagName('html')[0].change();
-            let htmlEval = document.createElement('span');
-            htmlEval.innerHTML = newInnerReplace;
-            this._currentInnerHtml[i] = htmlEval.innerHTML;//outerSpan.outerHTML;
+            //the html has to be evaluated in order to correct errors in html and normalize            
+            this._currentInnerHtml[i] = this.evaluateHTML(newInnerReplace);//outerSpan.outerHTML;
         }
         this._hasInitialized = true;
+        try {
+            callback(true);
+        }
+        catch {
+            return true;
+        }
+    }
 
-        return true;
+    evaluateHTML(rawHtml) {
+        let htmlEval = document.createElement('span');
+        htmlEval.innerHTML = rawHtml;
+        return htmlEval.innerHTML;
     }
 
     findAttributes(nonReplacedString, arr) {
@@ -238,8 +263,10 @@ class module {
 
     }
 
-    replaceVar(nonReplacedString) {
+    replaceVar(nonReplacedString, count) {
+        nonReplacedString = this.replaceInheritVar(nonReplacedString, count);
         for (var key in this._replacingObjects) {
+
             const replaceString = this._varOpener + key + this._varCloser;
             const re = new RegExp(replaceString, 'g');
             nonReplacedString = nonReplacedString.replace(re, this._replacingObjects[key]);
@@ -247,14 +274,49 @@ class module {
         return nonReplacedString;
     }
 
+    replaceInheritVar(nonReplacedString, count) {
+
+        const reCount = RegExp((this._varOpener + 'count' + this._varCloser), 'g');
+        nonReplacedString = nonReplacedString.replace(reCount, count);
+        
+        const reCountFromOne = RegExp((this._varOpener + 'countFromOne' + this._varCloser), 'g');
+        nonReplacedString = nonReplacedString.replace(reCountFromOne, count + 1);
+
+        const reInnerHTML = RegExp((this._varOpener + 'innerHTML' + this._varCloser), 'g');
+        console.log(this._originalHTML[count])
+        nonReplacedString = nonReplacedString.replace(reInnerHTML, this._originalHTML[count]);
+
+        return nonReplacedString;
+
+    }
+
 }
 
 var trivial = {
     //needs to be on dom change
-    refreshOnDOMChange: function(classes) {
-        if(Object.prototype.toString.call(classes) === '[object Array]') {
+    updatingModule: function (classes) {
+        this._updateAll = function () {
+            if (Object.prototype.toString.call(classes) === '[object Array]') {
+                for (var i = 0; i < classes.length; i++) {
+                    classes[i].init();
+                    classes[i].refreshCss();
+                    //instead of having it initialize make it so that the tags are updated and that the currentHtml[i] is updated
+                    //nmvnd you will have to make the init function eval the different tags
+                }
+            }
+            else {
+                document.addEventListener('change', function () {
+                    classes.init();
+                    classes.refreshCss();
+                });
+            }
+        }
+    },
+    _updateAll: '',
+    refreshOnDOMChange: function (classes) {
+        if (Object.prototype.toString.call(classes) === '[object Array]') {
             document.getElementsByTagName('body')[0].addEventListener('change', function () {
-                for(var i = 0; i < classes.length; i++) {
+                for (var i = 0; i < classes.length; i++) {
                     classes[i].init();
                     classes[i].refreshCss();
                     //instead of having it initialize make it so that the tags are updated and that the currentHtml[i] is updated
