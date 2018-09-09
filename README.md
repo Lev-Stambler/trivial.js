@@ -17,8 +17,6 @@ class customMod extends module {
       <{superCoolVar}>
     </div>`;
     super('tagName', html, { superCoolVar: "ecstatic" })
-    super.setHtmlSource('imageMod.triv');
-
   }
 }
 ```
