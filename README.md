@@ -94,7 +94,7 @@ I am number 1 and blue
 I am number 2 and blue
 ```
 
-the innerHTML variable will be set equal to what was inside a custom tag **before** init() is called on the tag. After init() is wiped the innerHTML will be stored within a variable but not visible in the web page unless the <()>:
+the innerHTML variable will be set equal to what was inside a custom tag **before** init() is called on the tag. After init(), the tags innerHTML is wiped, and the innerHTML will be stored within a variable but not visible in the web page unless <(innerHTML)> is placed in the HTML:
 
 ```
 <describer>one, da da da da da da dada. dadada da da da da I am number one!</describer>
