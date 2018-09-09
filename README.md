@@ -112,6 +112,22 @@ So the user will see:
 I am number one, da da da da da da dada. dadada da da da da I am number one!
 ```
 
+### Replacing Variables with a Tag's Attributes
+
+The HTML that is inputed into a module can also have variables within the HTML which correspond to a tag's attributes. The syntax looks like `<{attribute}>`
+```
+<describer description = 'this is a cool library'></describer>
+
+<script>
+  const html = `<div class = 'superCool'>
+    It's true that <{description}>
+  </div>`;
+  const customTag = new module('describer', html, {});
+  customTag.init();
+</script>
+```
+So within the describer tag, the user will see **It's true that this is a cool library** rather than **It's true that <{description}>**
+
 ## Authors
 
 * **Lev Stambler** - *Initial work* - [Lev-Stambler](https://github.com/Lev-Stambler)
