@@ -14,11 +14,11 @@
             Welcome to an <speltWrong>exhabition</speltWrong> of
             animals!!
         </h1>
-        <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
+        <imageMod animal='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
         </imageMod>
-        <imageMod imageDesc='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
+        <imageMod animal='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
         </imageMod>
-        <imageMod imagesrc='https://www.monkeyworlds.com/wp-content/uploads/information_about_monkeys.jpg' imageDesc='<speltWrong>Orengotang</speltWrong>'>
+        <imageMod imagesrc='https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F_W90V87w3sr8%2FTMf7rliXGSI%2FAAAAAAAAAEk%2FkeKwAtKZfoE%2Fs1600%2FOrangutan2_468x619.jpg&f=1' animal='<speltWrong>Orengotang</speltWrong>'>
         </imageMod>
     </div>
     <script>
@@ -42,7 +42,10 @@
             setTimeout(function () {
                 speltWrong.init();
                 speltWrong.setCssSource('speltWrong.css');
-                image.addEvent('click', () => { alert('SUCH CUTE ANIMALS'); });
+                image.addEvent('click', () => { 
+                    const animalCaps = '<{animal}>'.evaluateText().toUpperCase();
+                    alert('SUCH A CUTE ' + animalCaps); 
+                    });
 
             }, 10);
         });

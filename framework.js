@@ -152,7 +152,7 @@ class module {
     addEvent(event, func) {
         if (!this._hasInitialized) this.init()
         for (var i = 0; i < this._tags.length; i++) {
-            const funcString = this.replaceVar(String(func), i);
+            const funcString = this.replaceAllAttributes(this.replaceVar(String(func), i), this._replacingAttributes, this._tags[i]);
             if (this._shadowDOM)
                 this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString));
             else this._tags[i].addEventListener(event, eval(funcString));
@@ -221,7 +221,7 @@ class module {
             this._tags[i].append(outerSpan);
 
             //the html has to be evaluated in order to correct errors in html and normalize            
-            this._currentInnerHtml[i] = this.evaluateHTML(newInnerReplace);//outerSpan.outerHTML;
+            // this._currentInnerHtml[i] = newInnerReplace.evaluateHTML();//outerSpan.outerHTML;
         }
         this._hasInitialized = true;
         try {
@@ -230,12 +230,6 @@ class module {
         catch {
             return true;
         }
-    }
-
-    evaluateHTML(rawHtml) {
-        let htmlEval = document.createElement('span');
-        htmlEval.innerHTML = rawHtml;
-        return htmlEval.innerHTML;
     }
 
     findAttributes(nonReplacedString, arr) {
@@ -333,6 +327,18 @@ var trivial = {
             });
         }
     }
+}
+
+String.prototype.evaluateText = function () {
+    let htmlEval = document.createElement('span');
+    htmlEval.innerHTML = this;
+    return htmlEval.innerText;
+}
+
+String.prototype.evaluateHTML = function () {
+    let htmlEval = document.createElement('span');
+    htmlEval.innerHTML = this;
+    return htmlEval.innerHTML;
 }
 
 // customElements.define('trivial-module', module);
