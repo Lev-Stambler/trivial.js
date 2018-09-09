@@ -22,7 +22,7 @@ class customMod extends module {
 ```
 ## Authors
 
-* **Lev Stambler** - *Initial work* - [PurpleBooth](https://github.com/Lev-Stambler)
+* **Lev Stambler** - *Initial work* - [Lev-Stambler](https://github.com/Lev-Stambler)
 
 **Currently Lev Stambler is the only contributor. If you are intersted in contributing, please leave a comment below. (I read them all for now)**
 
