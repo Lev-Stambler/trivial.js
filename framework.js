@@ -14,6 +14,9 @@ class module {
         this._replacingAttributes = [];
         this._css = '';
         this._shadowDOM = false;
+        this._cssNode = document.createElement('style');
+        this._cssNode.type = 'text/css';
+        
     }
 
 
@@ -94,23 +97,27 @@ class module {
     setCss(cssCode) {
         //for now on sets init must be done inorder to find all components and add necessary stuff
         this.init();
-        const style = document.createElement('style');
-        style.type = 'text/css';
-        if (style.styleSheet) {
+        
+        if (this._cssNode.styleSheet) {
             // This is required for IE8 and below.
-            style.styleSheet.cssText = cssCode;
+            this._cssNode.styleSheet.cssText += cssCode;
         }
         else {
-            style.appendChild(document.createTextNode(cssCode));
+            this._cssNode.appendChild(document.createTextNode(cssCode));
         }
         for (var i = 0; i < this._tags.length; i++) {
-            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanIterate" + i + "Tag" + this._tagName)[0].shadowRoot.innerHTML += style.outerHTML;
-            else this._tags[i].getElementsByClassName("moduleOuterSpanIterate" + i + "Tag" + this._tagName)[0].innerHTML += style.outerHTML;
+            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._cssNode.outerHTML;
+            else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._cssNode.outerHTML;
         }
         return true;
     }
 
-
+    refreshCss() {
+        for (var i = 0; i < this._tags.length; i++) {
+            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML = this._cssNode.outerHTML;
+            else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML = this._cssNode.outerHTML;
+        }
+    }
 
     setJavascript(jsCode) {
         if (!this._hasInitialized) this.init();
@@ -163,7 +170,7 @@ class module {
 
             newInnerReplace = this.replaceAllAttributes(this._innerReplace, this._replacingAttributes, this._tags[i]);
             outerSpan = document.createElement('span');
-            const spanClass = "moduleOuterSpanIterate" + i + "Tag" + this._tagName;
+            const spanClass = "moduleOuterSpanTag" + this._tagName;
             outerSpan.className += spanClass;
             //if else to handle null innercurrenthtml
             //filtered html is html not javascript generated
@@ -194,7 +201,7 @@ class module {
             this._tags[i].append(outerSpan);
 
             //the html has to be evaluated in order to correct errors in html and normalize
-
+            // document.getElementsByTagName('html')[0].change();
             let htmlEval = document.createElement('span');
             htmlEval.innerHTML = newInnerReplace;
             this._currentInnerHtml[i] = htmlEval.innerHTML;//outerSpan.outerHTML;
@@ -243,18 +250,25 @@ class module {
 }
 
 var trivial = {
+    //needs to be on dom change
     refreshOnDOMChange: function(classes) {
         if(Object.prototype.toString.call(classes) === '[object Array]') {
-            document.addEventListener('change', function () {
+            document.getElementsByTagName('body')[0].addEventListener('change', function () {
                 for(var i = 0; i < classes.length; i++) {
                     classes[i].init();
+                    classes[i].refreshCss();
+                    //instead of having it initialize make it so that the tags are updated and that the currentHtml[i] is updated
+                    //nmvnd you will have to make the init function eval the different tags
                 }
             });
         }
         else {
             document.addEventListener('change', function () {
                 classes.init();
+                classes.refreshCss();
             });
         }
     }
 }
+
+// customElements.define('trivial-module', module);

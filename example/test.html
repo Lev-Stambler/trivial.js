@@ -10,7 +10,10 @@
 
 <body>
     <div class="container">
-        <h1><speltWrong><span>Welcome</span></speltWrong> to an <speltWrong><span>exhabition</span></speltWrong> of animals!!</h1>
+        <h1>
+            <speltWrong><span>Welcome</span></speltWrong> to an <speltWrong><span>exhabition</span></speltWrong> of
+            animals!!
+        </h1>
         <imageMod imageDesc='Dog' imagesrc='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg'>
         </imageMod>
         <imageMod imageDesc='Cat' imagesrc='http://images2.fanpop.com/image/photos/9400000/Funny-Cats-cats-9474038-1600-1200.jpg'>
@@ -29,14 +32,15 @@
         }
 
         const image = new imageMod();
-        image.init();
-    debugger;
         const speltWrong = new module('speltWrong', ``, {});
+        trivial.refreshOnDOMChange([speltWrong, image]);
+
         speltWrong.shadowDOM = true;
 
         speltWrong.setCssSource('speltWrong.css');
         speltWrong.init();
-        trivial.refreshOnDOMChange([speltWrong, image]);
+        image.init();
+
     </script>
 </body>
 
