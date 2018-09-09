@@ -206,8 +206,11 @@ class module {
         this._replacingAttributes = this.findAttributes(this._rawInnerHTML, []);
 
         this._tags = document.getElementsByTagName(this._tagName);
+        const spanClass = "moduleOuterSpanTag" + this._tagName;
+
         for (var i = 0; i < this._tags.length; i++) {
-            if (!this._hasInitialized) this._originalHTML.push(this._tags[i].innerHTML);
+
+            if (this._tags[i].getElementsByClassName(spanClass).length < 1) this._originalHTML.splice(i, 0, this._tags[i].innerHTML);
             this._varReplacedInnerHTML = this.replaceVar(this._rawInnerHTML, i);
             let outerSpan;
             let newInnerReplace = '';
@@ -216,7 +219,6 @@ class module {
             newInnerReplace = this.replaceAllAttributes(this._varReplacedInnerHTML, this._replacingAttributes, this._tags[i]);
             outerSpan = document.createElement('span');
 
-            const spanClass = "moduleOuterSpanTag" + this._tagName;
             outerSpan.className += spanClass;
             //if else to handle null innercurrenthtml
             //filtered html is html not javascript generated
