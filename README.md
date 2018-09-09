@@ -20,4 +20,12 @@ class customMod extends module {
   }
 }
 ```
+## Authors
 
+* **Lev Stambler** - *Initial work* - [PurpleBooth](https://github.com/Lev-Stambler)
+
+**Currently Lev Stambler is the only contributor. If you are intersted in contributing, please leave a comment below. (I read them all for now)**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
