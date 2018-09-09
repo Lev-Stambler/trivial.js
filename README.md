@@ -7,7 +7,13 @@ The idea of this framework-esc javascript library is so that frontend developers
 ```
 <script src = 'https://hostingLink/trivial.js'></script>
 ```
-This library gives the tools needed to create custom tags, which we call modules. The constructor for the module is made up of the tag name, the HTML, and the replacing variables (see **module.replacingObjects**).
+This library gives the tools needed to create custom tags, which we call modules. 
+
+##Usage
+
+###The Basics
+
+The constructor for the module is made up of the tag name, the HTML, and the replacing variables (see **module.replacingObjects**).
 Every created module is class based, so one could make a template for a module like: 
 
 ```
