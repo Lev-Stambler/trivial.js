@@ -149,14 +149,16 @@ class module {
         return true
     }
 
-    addEvent(event, func, replacingObjects) {
+    addEvent(event, func) {
         if (!this._hasInitialized) this.init()
-        for (var key in replacingObjects) {
-            for (var i = 0; i < this._tags.length; i++) {
-                const funcString = this.replaceVar(String(func), i)
-                this._tags[i].addEventListener(event, eval(funcString))
-            }
+        for (var i = 0; i < this._tags.length; i++) {
+            const funcString = this.replaceVar(String(func), i);
+            if (this._shadowDOM)
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString));
+            else this._tags[i].addEventListener(event, eval(funcString));
+            console.log(funcString)
         }
+
         return true
     }
 
@@ -190,21 +192,21 @@ class module {
             outerSpan.className += spanClass;
             //if else to handle null innercurrenthtml
             //filtered html is html not javascript generated
-            let filteredHtml = '';
-            if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName(spanClass).length > 0) {
-                if (this._shadowDOM)
-                    filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
-                else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML;
-            }
-            else if (this._tags[i].getElementsByClassName(spanClass).length > 0) {
-                const re = this._currentInnerHtml[i];
-                if (this._shadowDOM)
-                    filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML.split(re).join('');
-                else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML.split(re).join('');
-            }
-            else {
-                filteredHtml = this._tags[i].innerHTML;
-            }
+            // let filteredHtml = '';
+            // if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName(spanClass).length > 0) {
+            //     if (this._shadowDOM)
+            //         filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
+            //     else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML;
+            // }
+            // else if (this._tags[i].getElementsByClassName(spanClass).length > 0) {
+            //     const re = this._currentInnerHtml[i];
+            //     if (this._shadowDOM)
+            //         filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML.split(re).join('');
+            //     else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML.split(re).join('');
+            // }
+            // else {
+            //     filteredHtml = this._tags[i].innerHTML;
+            // }
             if (this._shadowDOM) {
                 outerSpan.attachShadow({ mode: 'open' });
                 outerSpan.shadowRoot.innerHTML = newInnerReplace;// + filteredHtml;
@@ -278,7 +280,7 @@ class module {
 
         const reCount = RegExp((this._varOpener + 'count' + this._varCloser), 'g');
         nonReplacedString = nonReplacedString.replace(reCount, count);
-        
+
         const reCountFromOne = RegExp((this._varOpener + 'countFromOne' + this._varCloser), 'g');
         nonReplacedString = nonReplacedString.replace(reCountFromOne, count + 1);
 

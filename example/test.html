@@ -33,7 +33,7 @@
 
         const image = new imageMod();
         const speltWrong = new module('speltWrong', `
-            <span><(innerHTML)></span>
+            <span onclick = 'alert("Who made this site? Everything is misspeled")'><(innerHTML)></span>
         `, {});
         // trivial.updatingModule([speltWrong, image]);
 
@@ -42,9 +42,9 @@
             setTimeout(function () {
                 speltWrong.init();
                 speltWrong.setCssSource('speltWrong.css');
+                image.addEvent('click', () => { alert('SUCH CUTE ANIMALS'); });
+
             }, 10);
-
-
         });
 
 
