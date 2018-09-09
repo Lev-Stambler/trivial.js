@@ -7,6 +7,7 @@ The idea of this framework-esc javascript library is so that frontend developers
 ```
 <script src = 'https://hostingLink/trivial.js'></script>
 ```
+The point is to make javascript and web dev simple, setupless, and susinct
 This library gives the tools needed to create custom tags, which we call modules. 
 
 ## Usage
