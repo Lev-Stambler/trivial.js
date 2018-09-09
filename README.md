@@ -20,7 +20,7 @@ Every created module is class based, so one could make a template for a module l
 class customMod extends module {
   constructor() {
     const html = `<div class = 'superCool'>
-      <{var}>
+      <(var)>
     </div>`;
     super('tagName', html, { var: "ecstatic" })
   }
@@ -41,7 +41,7 @@ customTag.init();
 A custom module does not have to be defined through extending the class though 
 ```
 const html = `<div class = 'superCool'>
-  <{superCoolVar}>
+  <(superCoolVar)>
 </div>`;
 const customTag = new module('tagName', html, { var: "ecstatic" });
 customTag.init();
