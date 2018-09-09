@@ -320,7 +320,7 @@ class module {
 var trivial = {
     //needs to be on dom change
     updatingModule: function (classes) {
-        this._updateAll = function () {
+        this.updateAll = function () {
             if (Object.prototype.toString.call(classes) === '[object Array]') {
                 for (var i = 0; i < classes.length; i++) {
                     classes[i].init();
@@ -337,7 +337,7 @@ var trivial = {
             }
         }
     },
-    _updateAll: '',
+    updateAll: '',
     refreshOnDOMChange: function (classes) {
         if (Object.prototype.toString.call(classes) === '[object Array]') {
             document.getElementsByTagName('body')[0].addEventListener('change', function () {

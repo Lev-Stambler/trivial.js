@@ -35,8 +35,8 @@
         const speltWrong = new module('speltWrong', `
             <span onclick = 'alert("Who made this site? Everything is misspeled")'><(innerHTML)></span>
         `, {});
-        // trivial.updatingModule([speltWrong, image]);
-
+        trivial.updatingModule([image, speltWrong]);
+        //they have to be correct order so if speltWrong is used in image, image must go first
         image.init(function () {
             speltWrong.shadowRoot = true;
             setTimeout(function () {
