@@ -141,11 +141,33 @@ div {
   background-color: red;
 }
 </style>`;
-const customTag = new module('describer', html, {});
+let customTag = new module('describer', html, {});
 customTag.init();
 customTag.shadowRoot = true;
 ```
-In order to delete the shadow root, simply `customTag.shadowRoot = false`
+In order to delete the shadow root, simply do `customTag.shadowRoot = false`
+
+### Importing HTML, CSS, and Javascript
+
+## HTML
+Simply call the function `setHTMLSource` with the url of the html as a parameter. Some servers and browsers automatically treat html files differently (i.e. they require the <html></html> tags and so on), so we recommend that the extention of the file is set to .triv (you know just to show the love)
+```
+let customTag = new module('describer', html, {});
+customTag.init();
+customTag.setHTMLSource('/myModHtml.triv');
+
+```
+myModHtml.triv may look something like this:
+```
+<div>
+I am element number <(countFromOne)>. I know that this library is just the <{adj}>
+</div>
+<style>
+  Some styling here
+</style>
+```
+
+Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter and with Javascript use the setJSSource, again with the URL as the parameter
 
 ## Authors
 
