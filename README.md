@@ -14,12 +14,36 @@ Every created module is class based, so one could make a template for a module l
 class customMod extends module {
   constructor() {
     const html = `<div class = 'superCool'>
-      <{superCoolVar}>
+      <{var}>
     </div>`;
-    super('tagName', html, { superCoolVar: "ecstatic" })
+    super('tagName', html, { var: "ecstatic" })
   }
 }
 ```
+
+The to implement the module, an instance of the class must be made. So for the custom moudle class defined:
+
+```
+let customTag = new customMod();
+```
+
+Then in order to initialize the module and make all changes to the DOM `module.init()` must be called:
+```
+customTag.init();
+```
+
+A custom module does not have to be defined through extending the class though 
+```
+const html = `<div class = 'superCool'>
+  <{superCoolVar}>
+</div>`;
+const customTag = new module('tagName', html, { var: "ecstatic" });
+customTag.init();
+```
+
+The above yields the same results as creating the custom class.
+
+
 ## Authors
 
 * **Lev Stambler** - *Initial work* - [Lev-Stambler](https://github.com/Lev-Stambler)
