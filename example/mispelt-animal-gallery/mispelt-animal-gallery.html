@@ -26,7 +26,7 @@
             constructor() {
                 const html = ``;
                 super('imageMod', html, { adj: "happy" })
-                super.setHtmlSource('imageMod.triv');
+                super.setHTMLSource('imageMod.triv');
 
             }
         }
@@ -38,10 +38,10 @@
         // trivial.updatingModule([speltWrong, image]);
 
         image.init(function () {
-            speltWrong.shadowDOM = true;
+            speltWrong.shadowRoot = true;
             setTimeout(function () {
                 speltWrong.init();
-                speltWrong.setCssSource('speltWrong.css');
+                speltWrong.setCSSSource('speltWrong.css');
                 image.addEvent('click', () => { 
                     const animalCaps = '<{animal}>'.evaluateText().toUpperCase();
                     alert('SUCH A CUTE ' + animalCaps); 

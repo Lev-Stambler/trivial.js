@@ -16,11 +16,13 @@ class module {
         this._shadowDOM = false;
         this._cssNode = document.createElement('style');
         this._cssNode.type = 'text/css';
+        this._jsNode = document.createElement('script');
+        this._jsNode.type = 'text/javascript';
         this._originalHTML = [];
     }
 
 
-    set shadowDOM(isShadow) {
+    set shadowRoot(isShadow) {
         if (isShadow) {
             this._shadowDOM = true;
             if (this._hasInitialized)
@@ -59,7 +61,7 @@ class module {
         if (this._hasInitialized) this.init()
     }
 
-    set innerReplace(newInnerReplace) {
+    set innerHTML(newInnerReplace) {
         this._rawInnerHTML = newInnerReplace
         if (this._hasInitialized) this.init()
     }
@@ -78,25 +80,44 @@ class module {
     }
 
 
-    setCssSource(url) {
+    setCSSSource(url) {
         const scope = this;
         $.get(url, function (res) {
-            scope.setCss(res)
+            scope.setCss(res);
         });
     }
 
-
-    setHtmlSource(url) {
+    setJSSource(url) {
         const scope = this;
         $.get(url, function (res) {
-            scope.innerReplace = res;
+            scope.setJS(res);
+        });
+    }
+
+    setHTMLSource(url) {
+        const scope = this;
+        $.get(url, function (res) {
+            scope.innerHTML = res;
         });
 
+    }
+
+    setJS(jsCode) {
+        //for now on sets init must be done inorder to find all components and add necessary stuff
+        if (!this._hasInitialized) this.init();
+
+        this._jsNode.appendChild(document.createTextNode(jsCode));
+
+        for (var i = 0; i < this._tags.length; i++) {
+            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._jsNode.outerHTML;
+            else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._jsNode.outerHTML;
+        }
+        return true;
     }
 
     setCss(cssCode) {
         //for now on sets init must be done inorder to find all components and add necessary stuff
-        this.init();
+        if (!this._hasInitialized) this.init();
 
         if (this._cssNode.styleSheet) {
             // This is required for IE8 and below.
@@ -115,13 +136,13 @@ class module {
     refreshCss() {
         for (var i = 0; i < this._tags.length; i++) {
             if (this._shadowDOM) {
-                let styleTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.getElementsByTagName('style');
+                let styleTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('style');
                 if (styleTag.length > 0) {
                     for (var j = 0; j < styleTag.length; j++)
                         styleTag[j].outerHTML = styleTag[j].outerHTML.split(this._cssNode).join('');
                 }
-                if (this._tags[i].getElementsByTagName('style'))
-                    this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._cssNode.outerHTML;
+                // if (this._tags[i].getElementsByTagName('style'))
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._cssNode.outerHTML;
             }
             else {
                 let styleTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('style');
@@ -133,21 +154,29 @@ class module {
             }
         }
     }
-
-    setJavascript(jsCode) {
-        if (!this._hasInitialized) this.init();
-        const jsTag = document.createElement('script');
-        if (jsTag.styleSheet) {
-            // This is required for IE8 and below.
-            style.styleSheet.cssText = cssCode;
-        } else {
-            jsTag.appendChild(document.createTextNode(jsCode));
-        }
+    //shadow dom does not work with this : (
+    refreshJS() {
         for (var i = 0; i < this._tags.length; i++) {
-            this._tags[i].appendChild(jsTag);
+            if (this._shadowDOM) {
+                let scriptTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('script');
+                if (scriptTag.length > 0) {
+                    for (var j = 0; j < scriptTag.length; j++)
+                        scriptTag[j].outerHTML = scriptTag[j].outerHTML.split(this._jsNode).join('');
+                }
+                // if (this._tags[i].getElementsByTagName('script'))
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._jsNode.outerHTML;
+            }
+            else {
+                let scriptTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('scirpt');
+                if (scriptTag.length > 0) {
+                    for (var j = 0; j < scriptTag.length; j++)
+                    scriptTag[j].outerHTML = scriptTag[j].outerHTML.split(this._cssNode).join('');
+                }
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._jsNode.outerHTML;
+            }
         }
-        return true
     }
+
 
     addEvent(event, func) {
         if (!this._hasInitialized) this.init()
@@ -156,7 +185,6 @@ class module {
             if (this._shadowDOM)
                 this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString));
             else this._tags[i].addEventListener(event, eval(funcString));
-            console.log(funcString)
         }
 
         return true
@@ -279,7 +307,6 @@ class module {
         nonReplacedString = nonReplacedString.replace(reCountFromOne, count + 1);
 
         const reInnerHTML = RegExp((this._varOpener + 'innerHTML' + this._varCloser), 'g');
-        console.log(this._originalHTML[count])
         nonReplacedString = nonReplacedString.replace(reInnerHTML, this._originalHTML[count]);
 
         return nonReplacedString;
