@@ -49,6 +49,25 @@ customTag.init();
 
 The above yields the same results as creating the custom class.
 
+### Replacing Variables
+
+The HTML that is inputed into a module can have variables within the HTML. These can be defined in third input to the module constructor. 
+```
+<describer></describer>
+
+<script>
+  const html = `<div class = 'superCool'>
+    I am <{adj}>
+  </div>`;
+  const customTag = new module('describer', html, { adj: "blue" });
+  customTag.init();
+</script>
+```
+So within the describer tag, the user will see **I am blue** rather than **I am <{adj}>**
+
+#### Inherit Variables
+
+
 
 ## Authors
 
