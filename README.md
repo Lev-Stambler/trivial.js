@@ -51,7 +51,7 @@ The above yields the same results as creating the custom class.
 
 ### Replacing Variables
 
-The HTML that is inputed into a module can have variables within the HTML. These can be defined in third input to the module constructor. 
+The HTML that is inputed into a module can have variables within the HTML. These can be defined in the third input to the module constructor. 
 ```
 <describer></describer>
 
