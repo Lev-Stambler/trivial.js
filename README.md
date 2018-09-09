@@ -128,6 +128,25 @@ The HTML that is inputed into a module can also have variables within the HTML w
 ```
 So within the describer tag, the user will see **It's true that this is a cool library** rather than **It's true that <{description}>**
 
+### Shadow Root
+
+trivial.js also comes with a convenient method to create a shadow root for each instance of the module.
+```
+const html = `<div class = 'superCool'>
+  This will be a shadow root
+</div>
+
+<style>
+div {
+  background-color: red;
+}
+</style>`;
+const customTag = new module('describer', html, {});
+customTag.init();
+customTag.shadowRoot = true;
+```
+In order to delete the shadow root, simply `customTag.shadowRoot = false`
+
 ## Authors
 
 * **Lev Stambler** - *Initial work* - [Lev-Stambler](https://github.com/Lev-Stambler)
