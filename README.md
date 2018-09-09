@@ -57,13 +57,13 @@ The HTML that is inputed into a module can have variables within the HTML. These
 
 <script>
   const html = `<div class = 'superCool'>
-    I am <{adj}>
+    I am <(adj)>
   </div>`;
   const customTag = new module('describer', html, { adj: "blue" });
   customTag.init();
 </script>
 ```
-So within the describer tag, the user will see **I am blue** rather than **I am <{adj}>**
+So within the describer tag, the user will see **I am blue** rather than **I am <(adj)>**
 
 #### Inherit Variables
 
@@ -81,7 +81,7 @@ count and countFromOne are similar. Count returns which instance of a module it 
 
 <script>
   const html = `<div class = 'superCool'>
-    I am number <{count}> and <{adj}>
+    I am number <(count)> and <(adj)>
   </div>`;
   const customTag = new module('describer', html, { adj: "blue" });
   customTag.init();
@@ -94,7 +94,23 @@ I am number 1 and blue
 I am number 2 and blue
 ```
 
-the innerHTML variable will be set equal to what was inside a custom tag **before** init() is called on the tag.
+the innerHTML variable will be set equal to what was inside a custom tag **before** init() is called on the tag. After init() is wiped the innerHTML will be stored within a variable but not visible in the web page unless the <()>:
+
+```
+<describer>one, da da da da da da dada. dadada da da da da I am number one!</describer>
+
+<script>
+  const html = `<div class = 'superCool'>
+    I am number <(innerHTML)>
+  </div>`;
+  const customTag = new module('describer', html, { adj: "blue" });
+  customTag.init();
+</script>
+```
+So the user will see: 
+```
+I am number one, da da da da da da dada. dadada da da da da I am number one!
+```
 
 ## Authors
 
