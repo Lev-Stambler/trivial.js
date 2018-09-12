@@ -170,7 +170,7 @@ class module {
                 let scriptTag = this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].getElementsByTagName('scirpt');
                 if (scriptTag.length > 0) {
                     for (var j = 0; j < scriptTag.length; j++)
-                    scriptTag[j].outerHTML = scriptTag[j].outerHTML.split(this._cssNode).join('');
+                        scriptTag[j].outerHTML = scriptTag[j].outerHTML.split(this._cssNode).join('');
                 }
                 this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._jsNode.outerHTML;
             }
@@ -207,10 +207,11 @@ class module {
 
         this._tags = document.getElementsByTagName(this._tagName);
         const spanClass = "moduleOuterSpanTag" + this._tagName;
+        trivial.trivialUpdating = true;
 
         for (var i = 0; i < this._tags.length; i++) {
-
-            if (this._tags[i].getElementsByClassName(spanClass).length < 1) this._originalHTML.splice(i, 0, this._tags[i].innerHTML);
+            if (this._tags[i].getElementsByClassName(spanClass).length < 1)
+                this._originalHTML.splice(i, 0, this._tags[i].innerHTML);
             this._varReplacedInnerHTML = this.replaceVar(this._rawInnerHTML, i);
             let outerSpan;
             let newInnerReplace = '';
@@ -220,23 +221,7 @@ class module {
             outerSpan = document.createElement('span');
 
             outerSpan.className += spanClass;
-            //if else to handle null innercurrenthtml
-            //filtered html is html not javascript generated
-            // let filteredHtml = '';
-            // if (this._currentInnerHtml[i] === undefined && this._tags[i].getElementsByClassName(spanClass).length > 0) {
-            //     if (this._shadowDOM)
-            //         filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
-            //     else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML;
-            // }
-            // else if (this._tags[i].getElementsByClassName(spanClass).length > 0) {
-            //     const re = this._currentInnerHtml[i];
-            //     if (this._shadowDOM)
-            //         filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML.split(re).join('');
-            //     else filteredHtml = this._tags[i].getElementsByClassName(spanClass)[0].innerHTML.split(re).join('');
-            // }
-            // else {
-            //     filteredHtml = this._tags[i].innerHTML;
-            // }
+
             if (this._shadowDOM) {
                 outerSpan.attachShadow({ mode: 'open' });
                 outerSpan.shadowRoot.innerHTML = newInnerReplace;// + filteredHtml;
@@ -254,6 +239,7 @@ class module {
             // this._currentInnerHtml[i] = newInnerReplace.evaluateHTML();//outerSpan.outerHTML;
         }
         this._hasInitialized = true;
+        setTimeout(() => { trivial.trivialUpdating = false }, 50);
         try {
             callback(true);
         }
@@ -319,43 +305,47 @@ class module {
 
 var trivial = {
     //needs to be on dom change
+    trivialUpdating: false,
     updatingModule: function (classes) {
-        this.updateAll = function () {
+        const update = this.updateAll = function () {
             if (Object.prototype.toString.call(classes) === '[object Array]') {
-                for (var i = 0; i < classes.length; i++) {
-                    classes[i].init();
-                    classes[i].refreshCss();
-                    //instead of having it initialize make it so that the tags are updated and that the currentHtml[i] is updated
-                    //nmvnd you will have to make the init function eval the different tags
+                console.log('aa')
+
+                let i = 0;
+                function loop() {
+                    setTimeout(function () {
+                        classes[i].init();
+                        i++;
+                        if (i < classes.length) {
+                            loop();
+                        }
+                    }, 15)
                 }
+                loop();
             }
             else {
-                document.addEventListener('change', function () {
-                    classes.init();
-                    classes.refreshCss();
-                });
+                classes.init();
             }
         }
+        setTimeout(() => {
+            const updateTrivialCheck = function (mutationsList) {
+                console.log(mutationsList)
+                if (this.trivialUpdating === false) update();
+            }
+
+            const htmlNode = document.getElementsByTagName('body')[0];
+            var observer = new MutationObserver(updateTrivialCheck);
+            var config = { attributes: true, childList: true, subtree: true };
+
+            observer.observe(htmlNode, config);
+        }, 50);
+        // setTimeout(() => { document.addEventListener('DOMSubtreeModified', function() {
+        //     console.log('aa')
+        //     update();
+        // })}, 50);
     },
+
     updateAll: '',
-    refreshOnDOMChange: function (classes) {
-        if (Object.prototype.toString.call(classes) === '[object Array]') {
-            document.getElementsByTagName('body')[0].addEventListener('change', function () {
-                for (var i = 0; i < classes.length; i++) {
-                    classes[i].init();
-                    classes[i].refreshCss();
-                    //instead of having it initialize make it so that the tags are updated and that the currentHtml[i] is updated
-                    //nmvnd you will have to make the init function eval the different tags
-                }
-            });
-        }
-        else {
-            document.addEventListener('change', function () {
-                classes.init();
-                classes.refreshCss();
-            });
-        }
-    }
 }
 
 String.prototype.evaluateText = function () {
