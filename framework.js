@@ -19,6 +19,11 @@ class module {
         this._jsNode = document.createElement('script');
         this._jsNode.type = 'text/javascript';
         this._originalHTML = [];
+        try {
+            document.registerElement(tagName);
+        } catch(e) {
+            console.log('already exists', e);
+        }
     }
 
 
@@ -56,10 +61,10 @@ class module {
         this._varCloser = this.escapeRegex(closer)
     }
 
-    set tagName(newTagName) {
-        this._tagName = newTagName
-        if (this._hasInitialized) this.init()
-    }
+    // set tagName(newTagName) {
+    //     this._tagName = newTagName
+    //     if (this._hasInitialized) this.init()
+    // }
 
     set innerHTML(newInnerReplace) {
         this._rawInnerHTML = newInnerReplace
@@ -247,7 +252,7 @@ class module {
         try {
             callback(true);
         }
-        catch {
+        catch (e) {
             return true;
         }
     }
@@ -270,7 +275,7 @@ class module {
 
     replaceAllAttributes(nonReplacedString, attributes, tag) {
         for (var i = 0; i < attributes.length; i++) {
-
+            if(tag.getAttribute(attributes[i]) === null) tag.getAttribute(attributes[i]) = '';
             const replaceString = this._attributeOpener + attributes[i] + this._attributeCloser;
             const re = new RegExp(replaceString, 'g');
             nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attributes[i]));
