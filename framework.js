@@ -235,10 +235,14 @@ class module {
             this._tags[i].innerHTML = '';
             this._tags[i].append(outerSpan);
 
-            //the html has to be evaluated in order to correct errors in html and normalize            
-            // this._currentInnerHtml[i] = newInnerReplace.evaluateHTML();//outerSpan.outerHTML;
         }
-        this._hasInitialized = true;
+
+        if (!this._hasInitialized) {
+            this._hasInitialized = true;
+        }
+
+        trivial.classes[this._tagName] = this;
+        //dangerous **if tag name is changed*** remove that functionallity
         setTimeout(() => { trivial.trivialUpdating = false }, 50);
         try {
             callback(true);
@@ -305,9 +309,10 @@ class module {
 
 var trivial = {
     //needs to be on dom change
+    classes: {},
     trivialUpdating: false,
     updatingModule: function (classes) {
-        const update = this.updateAll = function () {
+        const update = function () {
             if (Object.prototype.toString.call(classes) === '[object Array]') {
                 console.log('aa')
 
@@ -329,7 +334,6 @@ var trivial = {
         }
         setTimeout(() => {
             const updateTrivialCheck = function (mutationsList) {
-                console.log(mutationsList)
                 if (this.trivialUpdating === false) update();
             }
 
@@ -339,13 +343,25 @@ var trivial = {
 
             observer.observe(htmlNode, config);
         }, 50);
-        // setTimeout(() => { document.addEventListener('DOMSubtreeModified', function() {
-        //     console.log('aa')
-        //     update();
-        // })}, 50);
     },
 
-    updateAll: '',
+    initAll: function () {
+        let keyArr = [];
+        for (var key in this.classes) {
+            keyArr.push(key);
+        }
+        let i = 0;
+        function loop() {
+            setTimeout(function () {
+                trivial.classes[keyArr[i]].init();
+                i++;
+                if (i < keyArr.length) {
+                    loop();
+                }
+            }, 15)
+        }
+        loop();
+    },
 }
 
 String.prototype.evaluateText = function () {
