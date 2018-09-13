@@ -1,0 +1,6 @@
+let inputElement = document.getElementById('trivial-input-<(count)>');
+const inputModElement = document.getElementsByTagName('inputmodule')[<(count)>];
+const attrs = inputModElement.attributes.value;
+for (var key in attrs) {
+    inputElement.setAttribute(key, attrs[key]);
+}

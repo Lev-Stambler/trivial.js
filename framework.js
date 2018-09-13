@@ -21,7 +21,7 @@ class module {
         this._originalHTML = [];
         try {
             document.registerElement(tagName);
-        } catch(e) {
+        } catch (e) {
             console.log('already exists', e);
         }
     }
@@ -110,14 +110,18 @@ class module {
     setJS(jsCode) {
         //for now on sets init must be done inorder to find all components and add necessary stuff
         if (!this._hasInitialized) this.init();
+        setTimeout(() => {
+            for (var i = 0; i < this._tags.length; i++) {
+                let editedCode = this.replaceVar(jsCode, i);
+                editedCode = this.replaceAllAttributes(editedCode, this._replacingAttributes, this._tags[i]);
+                this._jsNode.innerHTML = editedCode;
+                if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._jsNode.outerHTML;
+                else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._jsNode.outerHTML;
+            }
+            return true;
+        }, 10);
+        // this._jsNode.appendChild(document.createTextNode(jsCode));
 
-        this._jsNode.appendChild(document.createTextNode(jsCode));
-
-        for (var i = 0; i < this._tags.length; i++) {
-            if (this._shadowDOM) this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.innerHTML += this._jsNode.outerHTML;
-            else this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].innerHTML += this._jsNode.outerHTML;
-        }
-        return true;
     }
 
     setCss(cssCode) {
@@ -275,7 +279,7 @@ class module {
 
     replaceAllAttributes(nonReplacedString, attributes, tag) {
         for (var i = 0; i < attributes.length; i++) {
-            if(tag.getAttribute(attributes[i]) === null) tag.getAttribute(attributes[i]) = '';
+            if (tag.getAttribute(attributes[i]) === null) tag.getAttribute(attributes[i]) = '';
             const replaceString = this._attributeOpener + attributes[i] + this._attributeCloser;
             const re = new RegExp(replaceString, 'g');
             nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attributes[i]));
