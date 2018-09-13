@@ -1,0 +1,18 @@
+<input id="trivial-input-<(count)>" />
+
+<script>
+
+    let inputElement = document.getElementById('trivial-input-<(count)>');
+    const inputModElement = document.getElementsByTagName('inputModule')[<(count)>];
+    var nodes = [], values = [];
+    for (var att, i = 0, atts = inputModElement.attributes, n = atts.length; i < n; i++) {
+        att = atts[i];
+        nodes.push(att.nodeName);
+        values.push(att.nodeValue);
+        console.log(att.nodeName, att.nodeValue);
+        inputElement.setAttribute(att.nodeName, att.nodeValue);
+    }
+
+    
+
+</script>
