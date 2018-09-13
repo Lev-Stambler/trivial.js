@@ -174,13 +174,17 @@ Loading CSS and Javascript are basically the same idea. For CSS just call the se
 While we are currently working on a way for the .init() to wait for all DOM changes, it is not functional at this time. So a setTimeout() call is required after an init call **if there are nested custom variables**. Because a callback can be used with init(), calling the function can look something like
 
 ```
+const outerMod = new module('outerMod', `<b><innerMod>HI. Isn't trivial just the coolest</innerMod></b>`, {})
+const innerMod = new module('innerMod', `<h1><(innerHTML)></h1>`, {})
+outerMod.init(() => {
+  setTimeout(() => { innerMod.init() }, 10);
+});
 ```
-
 
 ## The Trivial Object
 
 #### trivial.initAll()
-trivial.initAll() calls a function which calls the init() function of all module objects
+trivial.initAll() calls a function which calls the init() function of all module objects. An initial .init() function must be called on the class in order to add it to the trivial.initAll() function
 
 #### trivial.updatingModule(classes)
 
