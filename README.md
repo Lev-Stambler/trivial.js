@@ -169,6 +169,14 @@ I am element number <(countFromOne)>. I know that this library is just the <{adj
 
 Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter (ex `customTag.setCSSSource('/mySiteStyle.css')`) and with Javascript use the setJSSource (ex `customTag.setJSSource('/mySiteScript.js')`)
 
+### Setting Timeouts after a .init() is called
+
+While we are currently working on a way for the .init() to wait for all DOM changes, it is not functional at this time. So a setTimeout() call is required after an init call **if there are nested custom variables**. Because a callback can be used with init(), calling the function can look something like
+
+```
+```
+
+
 ## The Trivial Object
 
 #### trivial.initAll()
