@@ -7,4 +7,4 @@ class inputModule extends module {
 
 const input = new inputModule();
 input.setHTMLSource('/input-modules/inputHTML.triv');
-input.setJSSource('/input-modules/inputJS.triv');
+// input.setJSSource('/input-modules/inputJS.triv');

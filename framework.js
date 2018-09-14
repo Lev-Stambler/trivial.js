@@ -235,11 +235,14 @@ class module {
                 outerSpan.attachShadow({ mode: 'open' });
                 outerSpan.shadowRoot.innerHTML = newInnerReplace;// + filteredHtml;
                 outerSpan.shadowRoot.innerHTML += this._cssNode.outerHTML;
+                outerSpan.shadowRoot.innerHTML += this._jsNode.outerHTML;
             }
             else {
-                outerSpan.innerHTML = newInnerReplace;// + filteredHtml;
-                outerSpan.innerHTML += this._cssNode.outerHTML;
 
+                outerSpan.innerHTML = newInnerReplace;// + filteredHtml;
+                this._tags[i].appendChild(outerSpan);
+                outerSpan.innerHTML += this._cssNode.outerHTML;
+                outerSpan.innerHTML += this._jsNode.outerHTML;
             }
             this._tags[i].innerHTML = '';
             this._tags[i].append(outerSpan);
@@ -252,7 +255,25 @@ class module {
 
         trivial.classes[this._tagName] = this;
         //dangerous **if tag name is changed*** remove that functionallity
-        setTimeout(() => { trivial.trivialUpdating = false }, 50);
+        const scope = this;
+        setTimeout(() => {
+            for (var i = 0; i < scope._tags.length; i++) {
+                if (scope._shadowDOM) {
+                    const nonShadowNode = document.createElement('span');
+                    const nonShadowNodeHTML = scope._tags[i].shadowRoot.innerHTML;
+                    nonShadowNode.innerHTML = nonShadowNodeHTML;;
+                    const scriptTags = nonShadowNode.getElementsByTagName('script');
+                    console.log('aa')
+                    for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
+                }
+                else {
+                    const scriptTags = scope._tags[i].getElementsByTagName('script');
+                    console.log('aa')
+                    for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
+                }
+            }
+            trivial.trivialUpdating = false;
+        }, 15);
         try {
             callback(true);
         }
