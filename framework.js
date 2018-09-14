@@ -214,19 +214,22 @@ class module {
         document.createElement(this._tagName);
         this._replacingAttributes = this.findAttributes(this._rawInnerHTML, []);
 
-        this._tags = document.getElementsByTagName(this._tagName);
+        const tags = this._tags = document.getElementsByTagName(this._tagName);
+
+        debugger;
         const spanClass = "moduleOuterSpanTag" + this._tagName;
+        
         trivial.trivialUpdating = true;
 
-        for (var i = 0; i < this._tags.length; i++) {
-            if (this._tags[i].getElementsByClassName(spanClass).length < 1)
-                this._originalHTML.splice(i, 0, this._tags[i].innerHTML);
+        for (var i = 0; i < tags.length; i++) {
+            if (tags[i].getElementsByClassName(spanClass).length < 1)
+                this._originalHTML.splice(i, 0, tags[i].innerHTML);
             this._varReplacedInnerHTML = this.replaceVar(this._rawInnerHTML, i);
             let outerSpan;
             let newInnerReplace = '';
             this._replacingAttributes = this.findAttributes(this._varReplacedInnerHTML, []);
 
-            newInnerReplace = this.replaceAllAttributes(this._varReplacedInnerHTML, this._replacingAttributes, this._tags[i]);
+            newInnerReplace = this.replaceAllAttributes(this._varReplacedInnerHTML, this._replacingAttributes, tags[i]);
             outerSpan = document.createElement('span');
 
             outerSpan.className += spanClass;
@@ -240,13 +243,12 @@ class module {
             else {
 
                 outerSpan.innerHTML = newInnerReplace;// + filteredHtml;
-                this._tags[i].appendChild(outerSpan);
+                tags[i].appendChild(outerSpan);
                 outerSpan.innerHTML += this._cssNode.outerHTML;
                 outerSpan.innerHTML += this._jsNode.outerHTML;
             }
-            this._tags[i].innerHTML = '';
-            this._tags[i].append(outerSpan);
-
+            tags[i].innerHTML = '';
+            tags[i].append(outerSpan);
         }
 
         if (!this._hasInitialized) {
