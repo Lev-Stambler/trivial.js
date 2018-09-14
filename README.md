@@ -12,7 +12,7 @@ This library gives the tools needed to create custom tags, which we call modules
 
 ## Usage
 
-### The Basics
+### The Basics of the Module Class
 
 The constructor for the module is made up of **the tag name, the HTML, and the replacing variables** (see **module.replacingObjects**).
 Every created module is class based, so one could make a template for a module like: 
@@ -168,6 +168,47 @@ I am element number <(countFromOne)>. I know that this library is just the <{adj
 ```
 
 Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter (ex `customTag.setCSSSource('/mySiteStyle.css')`) and with Javascript use the setJSSource (ex `customTag.setJSSource('/mySiteScript.js')`)
+
+### Setting Timeouts after a .init() is called
+
+While we are currently working on a way for the .init() to wait for all DOM changes, it is not functional at this time. So a setTimeout() call is required after an init call **if there are nested custom variables**. Because a callback can be used with init(), calling the function can look something like
+
+```
+const outerMod = new module('outerMod', `<b><innerMod>HI. Isn't trivial just the coolest</innerMod></b>`, {})
+const innerMod = new module('innerMod', `<h1><(innerHTML)></h1>`, {})
+outerMod.init(() => {
+  setTimeout(() => { innerMod.init() }, 10);
+});
+```
+
+## The Trivial Object
+
+#### trivial.initAll()
+trivial.initAll() calls a function which calls the init() function of all module objects. An initial .init() function must be called on the class in order to add it to the trivial.initAll() function
+
+#### trivial.updatingModule(classes)
+
+trivial.updatingModule(classes) causes the inputed classes to call the init() function on a DOM change. If different modules are nested, the input argument of the updatingModule class must be in nested order. Check out the image gallery example for further explanation.
+
+```
+<module1>
+  <module2>
+    I am now bolded and large!
+  </module2>
+</module1>
+
+<script>
+  var module1 = new module('module1', `<h1><(innerHTML)></h1>`, {});
+  var module2 = new module('module2', `<b><(innerHTML)></b>`, {});
+  module1.init(function () {
+    setTimeout(() => { module2.init() }, 10);
+  });
+  trivial.updatingModule([module1, module2]);
+
+  //module 2 has to be put in after module 1
+</script>
+```
+
 
 ## Authors
 
