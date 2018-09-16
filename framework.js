@@ -215,12 +215,10 @@ class module {
         this._replacingAttributes = this.findAttributes(this._rawInnerHTML, []);
 
         const tags = this._tags = document.getElementsByTagName(this._tagName);
-
-        debugger;
+        
         const spanClass = "moduleOuterSpanTag" + this._tagName;
         
         trivial.trivialUpdating = true;
-
         for (var i = 0; i < tags.length; i++) {
             if (tags[i].getElementsByClassName(spanClass).length < 1)
                 this._originalHTML.splice(i, 0, tags[i].innerHTML);
@@ -262,15 +260,13 @@ class module {
             for (var i = 0; i < scope._tags.length; i++) {
                 if (scope._shadowDOM) {
                     const nonShadowNode = document.createElement('span');
-                    const nonShadowNodeHTML = scope._tags[i].shadowRoot.innerHTML;
+                    const nonShadowNodeHTML = scope._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
                     nonShadowNode.innerHTML = nonShadowNodeHTML;;
                     const scriptTags = nonShadowNode.getElementsByTagName('script');
-                    console.log('aa')
                     for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
                 }
                 else {
                     const scriptTags = scope._tags[i].getElementsByTagName('script');
-                    console.log('aa')
                     for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
                 }
             }
@@ -346,7 +342,6 @@ var trivial = {
     updatingModule: function (classes) {
         const update = function () {
             if (Object.prototype.toString.call(classes) === '[object Array]') {
-                console.log('aa')
 
                 let i = 0;
                 function loop() {

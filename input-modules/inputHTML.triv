@@ -1,9 +1,21 @@
 <input id="trivial-input-<(count)>" />
 <script>
-let inputElement = document.getElementById('trivial-input-<(count)>');
-const inputModElement = document.getElementsByTagName('inputmodule')[<(count)>];
-const attrs = inputModElement.attributes.value;
-for (var key in attrs) {
-    inputElement.setAttribute(key, attrs[key]);
+    let inputElement = document.getElementById('trivial-input-<(count)>');
+    let inputModElement = document.getElementsByTagName('inputmodule')[<(count)>];
+    const attrs = inputModElement.attributes.value;
+    console.log('aaa');
+    console.log('<(count)>');
+    for (var key in attrs) {
+        inputElement.setAttribute(key, attrs[key]);
+    }
+    inputModElement.className = '';
+
+
+function trivialFormValidate() {
+    
 }
+    
+    
+
+
 </script>
