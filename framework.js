@@ -190,10 +190,11 @@ class module {
     addEvent(event, func) {
         if (!this._hasInitialized) this.init()
         for (var i = 0; i < this._tags.length; i++) {
+            this._replacingAttributes = this.findAttributes(String(func), []);
             const funcString = this.replaceAllAttributes(this.replaceVar(String(func), i), this._replacingAttributes, this._tags[i]);
             if (this._shadowDOM)
                 this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString));
-            else this._tags[i].addEventListener(event, eval(funcString));
+            else this._tags[i].addEventListener(event, eval(funcString), false);
         }
 
         return true
@@ -215,9 +216,9 @@ class module {
         this._replacingAttributes = this.findAttributes(this._rawInnerHTML, []);
 
         const tags = this._tags = document.getElementsByTagName(this._tagName);
-        
+
         const spanClass = "moduleOuterSpanTag" + this._tagName;
-        
+
         trivial.trivialUpdating = true;
         for (var i = 0; i < tags.length; i++) {
             if (tags[i].getElementsByClassName(spanClass).length < 1)
@@ -261,7 +262,7 @@ class module {
                 if (scope._shadowDOM) {
                     const nonShadowNode = document.createElement('span');
                     const nonShadowNodeHTML = scope._tags[i].getElementsByClassName(spanClass)[0].shadowRoot.innerHTML;
-                    nonShadowNode.innerHTML = nonShadowNodeHTML;;
+                    nonShadowNode.innerHTML = nonShadowNodeHTML;
                     const scriptTags = nonShadowNode.getElementsByTagName('script');
                     for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
                 }
@@ -269,6 +270,10 @@ class module {
                     const scriptTags = scope._tags[i].getElementsByTagName('script');
                     for (var j = 0; j < scriptTags.length; j++) eval(scriptTags[j].innerHTML);
                 }
+                // const currentDisplay = scope._tags[i].style.display; 
+                // scope._tags[i].style.display = 'none';
+                // scope._tags[i].style.display = 'block';
+                // scope._tags[i].style.display = currentDisplay;
             }
             trivial.trivialUpdating = false;
         }, 15);
@@ -369,6 +374,10 @@ var trivial = {
             var config = { attributes: true, childList: true, subtree: true };
 
             observer.observe(htmlNode, config);
+            $(document).bind('domChanged', function () {
+                updateTrivialCheck();
+            });
+
         }, 50);
     },
 
@@ -389,6 +398,11 @@ var trivial = {
         }
         loop();
     },
+    updateDOM: function () {
+        document.getElementsByTagName('body')[0].style.display = 'none';
+        //an entire refresh must be forced. Setting none to block for object works, but flex does not work
+        document.getElementsByTagName('body')[0].style.display = 'block';
+    }
 }
 
 String.prototype.evaluateText = function () {

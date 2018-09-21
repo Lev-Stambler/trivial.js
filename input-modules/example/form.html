@@ -8,27 +8,30 @@
 </head>
 
 <body>
-    <div class="container" style="margin: 30px;">
-        <form>
-            <div class="form-group">
-                <label for="name">Email address:</label>
-                <inputmodule type="text" class="form-control" id="name" name = 'name' value = 'Joe Shmoe'></inputmodule>
-            </div>
-            <div class="form-group">
-                <label for="email">Email address:</label>
-                <inputmodule type="text" class="form-control" id="email" name = 'email' >Wowsers I can set inner values like this too!!</inputmodule>
-            </div>
-            <div class="form-group">
-                <label for="pwd">Password:</label>
-                <inputmodule type="password" class="form-control" id="pwd" name = 'password'></inputmodule>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <inputmodule type="checkbox" value= true name = 'remember'></inputmodule> Remember me
-                </label>
-            </div>
-            <inputmodule type="submit" class="btn btn-default">Submit</inputmodule>
-        </form>
+    <div class="row">
+
+        <div class="container" style="margin: 30px;">
+            <form>
+                <div class="form-group">
+                    <label for="name">Email address:</label>
+                    <inputmodule type="text" class="form-control" id="name" name='name' value='Joe Shmoe'></inputmodule>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address:</label>
+                    <inputmodule type="text" class="form-control" id="email" name='email'>Wowsers I can set inner values like this too!!</inputmodule>
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password:</label>
+                    <inputmodule type="password" class="form-control" id="pwd" name='password' required></inputmodule>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <inputmodule type="checkbox" value=true name='remember'></inputmodule> Remember me
+                    </label>
+                </div>
+                <inputmodule type="submit" class="btn btn-default">Submit</inputmodule>
+            </form>
+        </div>
     </div>
 
     <script src='/framework.js'></script>

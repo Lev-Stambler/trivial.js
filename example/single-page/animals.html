@@ -1,0 +1,72 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <div class="row">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">WebSiteName</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a>
+                            <a-sp src='home.htm' containerid='spContainer'>Home</a-sp>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <a-sp src='dog.htm' containerid='spContainer'>Dog</a-sp>
+                        </a>
+                    </li>
+                    <li><a href="#">Page 2</a></li>
+                    <li><a href="#">Page 3</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="row">
+        <div class='col-xs-12'>
+            <div class="container" id='spContainer' style="display:flex; justify-content:center;">
+                <default-HTML src='home.htm'>
+                </default-HTML>
+            </div>
+        </div>
+    </div>
+    <script src='/framework.js'></script>
+
+    <script src='/singlePageModules.js'>
+
+    </script>
+    <script>
+        const aSPModule = new singlePageLink(0, 'home.htm');
+
+        aSPModule.shadowRoot = true;
+
+        class imageMod extends module {
+            constructor() {
+                const html = ``;
+                super('imageMod', html, { adj: "happy" })
+                super.setHTMLSource('imageMod.triv');
+
+            }
+        }
+
+        const image = new imageMod();
+        image.init();
+        trivial.updatingModule(image);
+        // trivial.updatingModule();
+    </script>
+</body>
+
+</html>

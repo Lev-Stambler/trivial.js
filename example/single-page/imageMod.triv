@@ -1,0 +1,29 @@
+<div class='containerA' style = 'display: block;'>
+    <div class='jumbotron col-sm-12' style='padding: 40px; margin-top: 20px;'>
+        <div class='row'>
+            <h1>This is animal #<(countFromOne)></h1>
+            <div class='col-sm-12 center' style="display:flex;"><a href='<{imagesrc}>'><img src='<{imagesrc}>' style='max-height: 90%; max-width: 90%;'></a></div>
+            <div class='col-sm-12 center'>
+                <h1>This is an image of a <(adj)> <{animal}></h1>
+            </div>
+        </div>
+    </div>
+    <style>
+        .jumbotron,
+        .center {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .containerA {
+            padding: 10px 100px;
+        }
+
+        body {
+            margin: 0 auto;
+            position: relative;
+            text-align: center;
+        }
+    </style>
+</div>
