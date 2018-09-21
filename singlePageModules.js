@@ -35,9 +35,9 @@ class singlePageLink extends module {
                                 eval(setContainerHTMLScript);
                                 $(document).trigger('domChanged');
                                 const scriptTags = eval(`document.getElementById('<{containerid}>')`).getElementsByTagName('script');
+                                for(var i = 0; i < scriptTags.length; i++) eval (scriptTags[i].innerHTML);
 
                                 $('#<{containerid}>').fadeIn(parseInt('<(fadeTime)>'), () => {
-                                    for(var i = 0; i < scriptTags.length; i++) eval (scriptTags[i].innerHTML);
                                 });
 
                             });
