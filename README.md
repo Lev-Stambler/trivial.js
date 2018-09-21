@@ -209,6 +209,34 @@ trivial.updatingModule(classes) causes the inputed classes to call the init() fu
 </script>
 ```
 
+# Single page application module built with trivial.js
+## Setting up
+
+Within the single-page folder, singlePage.js is the file which needs to be included in the source after the trivial framework.  
+```
+<script src = '/singlePage.js'></script>
+```
+or, using if you npm install the package,
+
+```
+import a-sp module from trivial-singlePage-module
+```
+## Usage
+
+The tag created `<a-sp></a-sp>` is meant to mimick the anchor tag, except within a single page framework.
+
+The htm snippet of code can be loaded through the `src` attribute of the `<a-sp>` tag. Then, when the a-sp tag is pressed, the container with the id of the `<a-sp>` tag's attribute VAUFASIAGSIUAGS
+
+So for example
+```
+<div class = 'navbar'>
+  
+</div>
+
+```
+
+
+
 
 ## Authors
 
