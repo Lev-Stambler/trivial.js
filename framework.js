@@ -193,7 +193,7 @@ class module {
             this._replacingAttributes = this.findAttributes(String(func), []);
             const funcString = this.replaceAllAttributes(this.replaceVar(String(func), i), this._replacingAttributes, this._tags[i]);
             if (this._shadowDOM)
-                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString));
+                this._tags[i].getElementsByClassName("moduleOuterSpanTag" + this._tagName)[0].shadowRoot.addEventListener(event, eval(funcString), false);
             else this._tags[i].addEventListener(event, eval(funcString), false);
         }
 
@@ -345,7 +345,7 @@ var trivial = {
     classes: {},
     trivialUpdating: false,
     updatingModule: function (classes) {
-        const update = function () {
+        const update = () => {
             if (Object.prototype.toString.call(classes) === '[object Array]') {
 
                 let i = 0;
@@ -365,7 +365,7 @@ var trivial = {
             }
         }
         setTimeout(() => {
-            const updateTrivialCheck = function (mutationsList) {
+            const updateTrivialCheck = () => {
                 if (this.trivialUpdating === false) update();
             }
 
@@ -375,6 +375,7 @@ var trivial = {
 
             observer.observe(htmlNode, config);
             $(document).bind('domChanged', function () {
+                console.log('aaaa')
                 updateTrivialCheck();
             });
 

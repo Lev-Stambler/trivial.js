@@ -3,10 +3,7 @@ let HTMLFound = [];
 
 
 class singlePageLink extends module {
-    constructor(fadeTime, onLoad) {
-
-        if(fadeTime === undefined) fadeTime = 0;
-
+    constructor(fadeTime) {
 
         const innerScript = `<a><(innerHTML)></a>\<script\>
                             $.get(\`<{src}>\`, (res) => {
@@ -15,45 +12,46 @@ class singlePageLink extends module {
                         });
                         
                         \</script\>`;
-        super('a-sp', innerScript, {});
-        this.fadeTime = fadeTime;
+        super('a-sp', innerScript, { fadeTime });
         const superScope = this;
         super.init(() => {
-            var i = 0;
-            let defaultInnerSet = false;
+            var j = 0;
+
+            // let defaultInnerSet = false;
             function checkForSourceFound() {
                 setTimeout(() => {
-                    console.log('aa')
                     let htmlLoaded = true
-                    for (var j = 0; j < HTMLFound.length; j++) {
+                    for (j =j; j < HTMLFound.length; j++) {
                         if (eval('HTMLFound[\'<{src}>\']') === false) {
                             htmlLoaded = false, checkForSourceFound();
                             break;
                         }
                     }
                     if (htmlLoaded === true) {
-                        var fadingTime = superScope.fadeTime;
-                        console.log(fadingTime)
-                        superScope.addEvent('click', (e, fadingTime) => {
+                        superScope.addEvent('click', (e) => {
                             e.preventDefault();
-                            console.log('aa');
-                            $('#<{containerid}>').fadeOut(0);
-                            const setContainerHTMLScript = `document.getElementById('<{containerid}>').innerHTML = storedHTML["<{src}>"]`;
-                            $('#<{containerid}>').fadeIn(fadingTime);
-                            eval(setContainerHTMLScript);
+                            $('#<{containerid}>').fadeOut(0, () => {
+                                const setContainerHTMLScript = `document.getElementById('<{containerid}>').innerHTML = storedHTML["<{src}>"]`;
+                                eval(setContainerHTMLScript);
+                                $(document).trigger('domChanged');
+                                const scriptTags = eval(`document.getElementById('<{containerid}>')`).getElementsByTagName('script');
+
+                                $('#<{containerid}>').fadeIn(parseInt('<(fadeTime)>'), () => {
+                                    for(var i = 0; i < scriptTags.length; i++) eval (scriptTags[i].innerHTML);
+                                });
+
+                            });
                         });
                     }
+
                 }, 20)
             }
             checkForSourceFound();
-
             setTimeout(() => {
                 eval();
             }, 20);
         });
-        super.setCss(`a:hover {
-            cursor: pointer;
-        }`)
+        
     }
 
 }

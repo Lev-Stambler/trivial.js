@@ -8,7 +8,9 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
 
+    </style>
 </head>
 
 <body>
@@ -46,13 +48,15 @@
     <script src='/framework.js'></script>
 
     <script src='/singlePageModules.js'>
-
     </script>
     <script>
-        const aSPModule = new singlePageLink(0, 'home.htm');
+        const aSPModule = new singlePageLink(400);
 
         aSPModule.shadowRoot = true;
-
+        
+        aSPModule.setCss(`a:hover {
+            cursor: pointer;
+        }`)
         class imageMod extends module {
             constructor() {
                 const html = ``;
@@ -65,7 +69,8 @@
         const image = new imageMod();
         image.init();
         trivial.updatingModule(image);
-        // trivial.updatingModule();
+
+
     </script>
 </body>
 
