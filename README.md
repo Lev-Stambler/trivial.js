@@ -229,7 +229,7 @@ import { new singlePageLink(FADETIME) as ASPModule } from trivial-singlePage-mod
 ```
 
 ## FADETIME
-Fadetime is the time it takes to fade in a single page's content when a link is pressed. To get rid of it, set it to 0. Fadetime is passed in as an argument in the class constructor.
+Fadetime is the time it takes to fade in a single page's content when a link is pressed. To get rid of it, set it to 0. Fadetime is passed in as an argument in the class constructor. Fadetime is in milliseconds 
 
 ## Usage
 
@@ -248,6 +248,15 @@ So for example
 <div id = 'contentContainer'>
 
 </div>
+
+<script src='/framework.js'>
+</script>
+
+<script src='/singlePageModules.js'>
+</script>
+<script>
+    const aSPModule = new singlePageLink(400);
+</script>
 
 ```
 
