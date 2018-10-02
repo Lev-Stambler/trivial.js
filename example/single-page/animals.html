@@ -33,6 +33,7 @@
                     <li class = 'cat'><a>
                         <a-sp src = 'cat.htm' containerid = 'spContainer'>Cat</a-sp>
                     </a></li>
+                    
                 </ul>
             </div>
         </nav>
@@ -52,10 +53,16 @@
     <script>
         const aSPModule = new singlePageLink(400);
 
-        aSPModule.shadowRoot = true;
+        // aSPModule.shadowRoot = true;
         
         aSPModule.setCss(`a:hover {
             cursor: pointer;
+            color: #f4f4f4;
+            text-decoration:none
+        }
+        a {
+            color: #f4f4f4;
+            text-decoration:none;
         }`)
         class imageMod extends module {
             constructor() {

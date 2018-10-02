@@ -303,7 +303,7 @@ class module {
 
     replaceAllAttributes(nonReplacedString, attributes, tag) {
         for (var i = 0; i < attributes.length; i++) {
-            if (tag.getAttribute(attributes[i]) === null) tag.getAttribute(attributes[i]) = '';
+            if (tag.getAttribute(attributes[i]) === null) tag.setAttribute(attributes[i], '');
             const replaceString = this._attributeOpener + attributes[i] + this._attributeCloser;
             const re = new RegExp(replaceString, 'g');
             nonReplacedString = nonReplacedString.replace(re, tag.getAttribute(attributes[i]));
@@ -375,7 +375,6 @@ var trivial = {
 
             observer.observe(htmlNode, config);
             $(document).bind('domChanged', function () {
-                console.log('aaaa')
                 updateTrivialCheck();
             });
 

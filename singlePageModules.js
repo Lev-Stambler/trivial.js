@@ -1,16 +1,19 @@
 let storedHTML = [];
 let HTMLFound = [];
-
+let HTMLLoading = [];
 
 class singlePageLink extends module {
     constructor(fadeTime) {
 
         const innerScript = `<a><(innerHTML)></a>\<script\>
-                            $.get(\`<{src}>\`, (res) => {
-                            storedHTML["<{src}>"] =  res;    
-                            HTMLFound["<{src}>"] = true;
-                        });
-                        
+                            if (!HTMLLoading['<{src}>'] || HTMLLoading['<{src}>'] === undefined) {
+                                console.log('z');
+                                HTMLLoading['<{src}>'] = true;
+                                $.get(\`<{src}>\`, (res) => {
+                                    storedHTML["<{src}>"] =  res;    
+                                    HTMLFound["<{src}>"] = true;
+                                });
+                            }                        
                         \</script\>`;
         super('a-sp', innerScript, { fadeTime });
         const superScope = this;
