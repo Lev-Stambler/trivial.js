@@ -215,24 +215,55 @@ trivial.updatingModule(classes) causes the inputed classes to call the init() fu
 Within the single-page folder, singlePage.js is the file which needs to be included in the source after the trivial framework.  
 ```
 <script src = '/singlePage.js'></script>
+
+```
+Then, an instance of the class must be  initialized
+
+```
+const ASPModule = new singlePageLink(FADETIME);
 ```
 or, using if you npm install the package,
 
 ```
-import a-sp module from trivial-singlePage-module
+import { new singlePageLink(FADETIME) as ASPModule } from trivial-singlePage-module
 ```
+
+## FADETIME
+Fadetime is the time it takes to fade in a single page's content when a link is pressed. To get rid of it, set it to 0. Fadetime is passed in as an argument in the class constructor. Fadetime is in milliseconds 
+
 ## Usage
 
 The tag created `<a-sp></a-sp>` is meant to mimick the anchor tag, except within a single page framework.
 
-The htm snippet of code can be loaded through the `src` attribute of the `<a-sp>` tag. Then, when the a-sp tag is pressed, the container with the id of the `<a-sp>` tag's attribute VAUFASIAGSIUAGS
+Inorder to use it 
+
+The htm snippet of code can be loaded through the `src` attribute of the `<a-sp>` tag. Then, when the a-sp tag is pressed, the container with the id of the `<a-sp>` tag's attribute containerid
 
 So for example
 ```
 <div class = 'navbar'>
-  
+  <a-sp src = 'someSRC.htm' containerid = 'contentContainer'>Go To Some-Page!</a-sp>
 </div>
 
+<div id = 'contentContainer'>
+
+</div>
+
+<script src='/framework.js'>
+</script>
+
+<script src='/singlePageModules.js'>
+</script>
+<script>
+    const aSPModule = new singlePageLink(400);
+</script>
+
+```
+
+And in someSrc.htm would have
+
+```
+<b>Hey wzzp, you are on the Some-Page right now. So cool</b>
 ```
 
 
