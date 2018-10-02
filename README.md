@@ -266,7 +266,17 @@ And in someSrc.htm would have
 <b>Hey wzzp, you are on the Some-Page right now. So cool</b>
 ```
 
+### Styling
 
+In order to style the a-sp tag, use styling for the anchor tag
+Ex.
+```
+a-sp a {
+  color: green;
+  ...
+  ...
+}
+```
 
 
 ## Authors
