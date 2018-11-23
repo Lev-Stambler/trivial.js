@@ -7,7 +7,7 @@ The idea of this framework-esque javascript library is so that frontend develope
 ```
 <script src = 'https://hostingLink/trivial.js'></script>
 ```
-The point is to make javascript and web dev simple, setupless, and susinct
+The point is to make javascript and web dev simple, setup-less, and susinct.
 This library gives the tools needed to create custom tags, which we call modules. 
 
 ## Usage
