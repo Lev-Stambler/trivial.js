@@ -166,7 +166,7 @@ I am element number <(countFromOne)>. I know that this library is just the <{adj
   Some styling here
 </style>
 ```
-
+**whatever you do, DO NOT call a module's own init() from within a module's source. It will cause feedback hell**
 Loading CSS and Javascript are basically the same idea. For CSS just call the setCSSSource with the url as the parameter (ex `customTag.setCSSSource('/mySiteStyle.css')`) and with Javascript use the setJSSource (ex `customTag.setJSSource('/mySiteScript.js')`)
 
 ### Setting Timeouts after a .init() is called
